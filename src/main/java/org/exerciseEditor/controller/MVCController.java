@@ -17,6 +17,7 @@ public abstract class MVCController {
         int option = JOptionPane.showOptionDialog(null, "Do you really want to cancel and discard all changes?",
                 "Discard changes?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (option == JOptionPane.YES_OPTION) {
+            // TODO: alle eingaben löschen
             graFlapExerciseEditor.navigateTo(PanelName.START);
         }
     }

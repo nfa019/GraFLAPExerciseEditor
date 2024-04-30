@@ -12,7 +12,7 @@ public class CreateModels {
     public void createModels() {
         automatonModel = new AutomatonModel.Builder().build();
         grammarModel = new GrammarModel.Builder().build();
-//        machineModel = new MachineModel.Builder().build(); // TODO: MachineMode.Builder().build() erstellen
+        machineModel = new MachineModel.Builder().build();
     }
 
     public AutomatonModel getAutomatonModel() {

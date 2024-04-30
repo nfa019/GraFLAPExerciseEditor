@@ -41,7 +41,7 @@ public class GraFlapExerciseEditor {
         int width = 500;
         int height = 300;
         startSize = new Dimension(width, height);
-        frame = new JFrame("GraFLAP Task Editor");
+        frame = new JFrame("GraFLAP Exercise Editor");
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 

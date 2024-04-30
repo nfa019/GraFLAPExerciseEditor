@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class GrammarView extends BaseView {
     private JTextField languageTextField;
-    private JButton checkInputButton;
     private JCheckBox randomizeLowerCaseCheckBox;
     private JPanel MainPanel;
     private JPanel OptionalPanel;
@@ -30,9 +29,6 @@ public class GrammarView extends BaseView {
     private JButton saveDraftButton;
     private JButton previewButton;
     private JButton cancelButton;
-    private JPanel buttonPanel;
-    private JPanel leftPanel;
-    private JPanel rightPanel;
     private GrammarController grammarViewController;
     public GrammarView() {
     }
@@ -70,7 +66,6 @@ public class GrammarView extends BaseView {
     }
 
     private void initActionListeners() {
-        checkInputButton.addActionListener(e -> grammarViewController.handleCheckInputButton());
         backButton.addActionListener(e -> grammarViewController.handleBackButton());
         cancelButton.addActionListener(e -> grammarViewController.handleCancelButton());
         saveDraftButton.addActionListener(e -> grammarViewController.handleSaveDraftButton());

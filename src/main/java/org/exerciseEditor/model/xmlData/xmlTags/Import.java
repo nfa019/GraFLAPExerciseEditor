@@ -1,10 +1,8 @@
-package org.exerciseEditor.model.xmlData;
+package org.exerciseEditor.model.xmlData.xmlTags;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-@JacksonXmlRootElement(localName = "import")
 public class Import {
     @JacksonXmlProperty(isAttribute = true)
     private String id;

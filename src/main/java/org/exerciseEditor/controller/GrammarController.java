@@ -60,7 +60,4 @@ public class GrammarController extends MVCController {
 
     public void handleCreateButton() {
     }
-
-    public void handleCheckInputButton() {
-    }
 }

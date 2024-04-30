@@ -1,5 +1,6 @@
 package org.exerciseEditor.controller;
 
+import lc2mdl.Main;
 import org.exerciseEditor.GraFlapExerciseEditor;
 import org.exerciseEditor.MyFileHandler;
 import org.exerciseEditor.XMLConverter;
@@ -7,6 +8,7 @@ import org.exerciseEditor.enums.AutomatonState;
 import org.exerciseEditor.enums.PanelName;
 import org.exerciseEditor.model.AutomatonModel;
 import org.exerciseEditor.view.*;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
@@ -31,11 +33,6 @@ public class AutomatonController extends MVCController {
         automatonView.update(automatonModel);
     }
 
-    public void handleCheckInputButton() {
-        // TODO: Funktionalität hinzufügen!
-        System.out.println("Muss noch gemacht werden!!!");
-    }
-
     public void handleChooseFileButton() {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JFF File (*.jff)", "jff");
         File startDirectory = new File("/home/sergio/Schreibtisch/Bachelorarbeit/von Frauke");
@@ -43,11 +40,6 @@ public class AutomatonController extends MVCController {
         if (filePath != null) {
             automatonView.setChosenFileTextField(filePath);
         }
-    }
-
-    public void handleCreateSampleSolutionButton() {
-        // TODO: Funktionalität hinzufügen!
-        System.out.println("Muss noch gemacht werden!!!");
     }
 
     public void handleSaveDraftButton() {
@@ -63,7 +55,23 @@ public class AutomatonController extends MVCController {
     public void handleCreateButton() {
         if (automatonView.allTextComponentsNotEmpty()) {
             this.automatonModel = buildNewAutomaton();
-            saveAutomaton();
+            String filePath = saveAutomaton();
+            if (filePath != null) {
+                File createdFile = new File(filePath);
+                String fileName = createdFile.getName().replaceFirst("[.][^.]+$", "");
+                File folder = new File("/home/sergio/Schreibtisch/Bachelorarbeit/TestProblems/ProForma/" + fileName);
+                if (!folder.exists()) {
+                    boolean success = folder.mkdirs();
+                    if (success) {
+                        System.out.println("Der Ordner wurde erfolgreich erstellt.");
+//                        lc2mdl.Main.convertLCtoMoodle(createdFile, folder, 20, filePath);
+                    } else {
+                        System.out.println("Fehler beim Erstellen des Ordners.");
+                    }
+                } else {
+                    System.out.println("Der Ordner existiert bereits.");
+                }
+            }
         } else {
             automatonView.showValidationError();
             automatonView.highlightEmptyFields();
@@ -83,21 +91,24 @@ public class AutomatonController extends MVCController {
                 .determinism(automatonView.getDeterminism())
                 .jffPathName(automatonView.getChosenFileText())
                 .randomizeLowerCase(automatonView.isRandomizeLowerCaseIsSelected())
-                .setPartsDefinitionRequested(automatonView.isPartsDefinitionRequestedSelected())
+                .partsDefinitionRequested(automatonView.isPartsDefinitionRequestedSelected())
+                .automaticSolution(automatonView.isAutomaticSolutionSelected())
                 .build();
     }
 
-    private void saveAutomaton() {
+    private @Nullable String saveAutomaton() {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task File (*.problem)", "problem");
-        File startDirectory = new File("/home/sergio/Schreibtisch/Bachelorarbeit/TestProblems");
+        File startDirectory = new File("/home/sergio/Schreibtisch/Bachelorarbeit/TestProblems"); // TODO: startDirectory raus nehmen
         String filePath = MyFileHandler.chooseFilePath(filter, startDirectory);
         if (filePath != null) {
-            if (!filePath.toLowerCase().endsWith(".problem")) {
-                filePath = filePath + ".problem";
-            }
-            XMLConverter.createAutomatonTaskFile(automatonModel, filePath);
+//            if (!filePath.toLowerCase().endsWith(".problem")) {
+//                filePath = filePath + ".problem";
+//            }
+            XMLConverter.createAutomatonProblemFile(automatonModel, filePath);
             automatonView.showSuccessMessage();
             graFlapExerciseEditor.navigateTo(PanelName.START);
+            return filePath;
         }
+        return null;
     }
 }

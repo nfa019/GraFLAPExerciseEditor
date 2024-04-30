@@ -1,4 +1,4 @@
-package org.exerciseEditor.model.xmlData;
+package org.exerciseEditor.model.xmlData.xmlTags;
 
 
 import com.fasterxml.jackson.annotation.JsonRawValue;

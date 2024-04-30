@@ -22,14 +22,12 @@ public class AutomatonView extends BaseView {
     private JCheckBox grammarCheckBox;
     private JCheckBox regexCheckBox;
     private JTextField languageTextField;
-    private JButton checkInputButton;
     private JCheckBox randomizeLowerCaseCheckBox;
     private JCheckBox partsDefinitionRequestedCheckBox;
     private JTextField chosenFileTextField;
     private JButton chooseFileButton;
     private JComboBox<AutomatonType> typesComboBox;
     private JComboBox<Determinism> determinismComboBox;
-    private JButton createSampleSolutionButton;
     private JTextArea sampleSolutionTextArea;
     private JTextArea acceptedWordsTextArea;
     private JTextArea nonAcceptedWordsTextArea;
@@ -42,9 +40,7 @@ public class AutomatonView extends BaseView {
     private JButton cancelButton;
     private JPanel OptionalPanel;
     private JPanel MainPanel;
-    private JPanel buttonPanel;
-    private JPanel leftPanel;
-    private JPanel rightPanel;
+    private JCheckBox automaticSolutionCheckBox;
     private AutomatonController automatonViewController;
 
     public AutomatonView() {
@@ -70,9 +66,6 @@ public class AutomatonView extends BaseView {
         textComponentsList.add(descriptionTextArea);
         textComponentsList.add(languageTextField);
         textComponentsList.add(chosenFileTextField);
-        textComponentsList.add(sampleSolutionTextArea);
-        textComponentsList.add(acceptedWordsTextArea);
-        textComponentsList.add(nonAcceptedWordsTextArea);
         return textComponentsList;
     }
 
@@ -87,12 +80,10 @@ public class AutomatonView extends BaseView {
         grammarCheckBox.addItemListener(grammarOrRegexCheckBoxListener);
         regexCheckBox.addItemListener(grammarOrRegexCheckBoxListener);
 
-        checkInputButton.addActionListener(e -> automatonViewController.handleCheckInputButton());
         chooseFileButton.addActionListener(e -> {
             automatonViewController.handleChooseFileButton();
             chosenFileTextField.setBorder(UIManager.getBorder("TextField.border"));
         });
-        createSampleSolutionButton.addActionListener(e -> automatonViewController.handleCreateSampleSolutionButton());
         backButton.addActionListener(e -> automatonViewController.handleBackButton());
         cancelButton.addActionListener(e -> automatonViewController.handleCancelButton());
         saveDraftButton.addActionListener(e -> automatonViewController.handleSaveDraftButton());
@@ -144,6 +135,7 @@ public class AutomatonView extends BaseView {
     }
 
     public String getAcceptedWordsText() {
+
         return acceptedWordsTextArea.getText();
     }
 
@@ -177,6 +169,10 @@ public class AutomatonView extends BaseView {
 
     public boolean isPartsDefinitionRequestedSelected() {
         return partsDefinitionRequestedCheckBox.isSelected();
+    }
+
+    public boolean isAutomaticSolutionSelected() {
+        return automaticSolutionCheckBox.isSelected();
     }
 
     public boolean allTextComponentsNotEmpty() {

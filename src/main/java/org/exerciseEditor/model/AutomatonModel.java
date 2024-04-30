@@ -16,6 +16,7 @@ public class AutomatonModel extends BaseModel {
     private final String jffPathName;
     private final boolean randomizeLowerCase;
     private final boolean partsDefinitionRequested;
+    private final boolean automaticSolution;
 
     public static class Builder {
         private String title = "";
@@ -30,6 +31,7 @@ public class AutomatonModel extends BaseModel {
         private Determinism determinism = Determinism.NOT_SPECIFIED;
         private boolean randomizeLowerCase = true;
         private boolean partsDefinitionRequested = false;
+        private boolean automaticSolution = true;
 
         public Builder title(String title) {
             this.title = title;
@@ -87,8 +89,13 @@ public class AutomatonModel extends BaseModel {
             return this;
         }
 
-        public Builder setPartsDefinitionRequested(boolean parts) {
+        public Builder partsDefinitionRequested(boolean parts) {
             this.partsDefinitionRequested = parts;
+            return this;
+        }
+
+        public Builder automaticSolution(boolean automaticSolution) {
+            this.automaticSolution = automaticSolution;
             return this;
         }
 
@@ -111,6 +118,7 @@ public class AutomatonModel extends BaseModel {
         this.jffPathName = builder.jffPathName;
         this.randomizeLowerCase = builder.randomizeLowerCase;
         this.partsDefinitionRequested = builder.partsDefinitionRequested;
+        this.automaticSolution = builder.automaticSolution;
     }
 
     public String getLanguage() {
@@ -152,5 +160,9 @@ public class AutomatonModel extends BaseModel {
 
     public boolean isPartsDefinitionRequested() {
         return partsDefinitionRequested;
+    }
+
+    public boolean isAutomaticSolution() {
+        return automaticSolution;
     }
 }
