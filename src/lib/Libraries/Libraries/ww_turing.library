@@ -1,0 +1,122 @@
+<library>
+<script type="loncapa/perl">
+#use 5.014;
+#use strict;
+#use warnings;
+#use regex;
+package wwturing;
+
+#adds a word to a list (only if it is new)
+sub addWord{
+    my $word = shift;
+    my @list = @_;
+    my $inList = 0;
+    #remove empty words
+    if (( $word =~ m/€/ )) {$word =~ s/€//g; }
+    foreach (@list) { if ($word eq $_) { $inList=1; last;} }
+    if (!$inList) {
+        $list[$#list+1] = $word;
+        }
+    return @list;
+}
+
+# makes a random word of length $newl from given letters
+sub randomWord{
+    my $newl = shift;
+    my @letters = @_;
+    my $newword ="";
+        for (my $i=1; $i<=$newl; $i++){
+         $newword .= $letters[&main::random(0,$#letters,1)];
+        }
+    return $newword;
+}
+
+# makes words of the form ww (first half equals second half)
+
+sub makeWordsWW{
+    my $maxcount = shift;
+        my $maxlength = shift;
+        my @letters = @_;
+
+        my @firsthalf;
+        my @words;
+    my $newl=1;
+    my $levelct=$#letters+1;
+    my $lev=1;
+    while ( ($#firsthalf+1 < $maxcount) && $newl < $maxlength/2 ){
+        my $newword = grammar::randomWord($newl, @letters);
+                @firsthalf = grammar::addWord($newword,@firsthalf);
+        $lev++;
+        if($lev > $levelct) {
+            $newl++;
+            $levelct *= $#letters+1;
+            $lev=1;
+            }
+        }
+    # sort by length
+    @firsthalf = sort { length($a) <=> length($b) } @firsthalf;
+
+    foreach my $w (@firsthalf){
+                push(@words, $w . $w);
+        }
+
+        return @words;
+}
+
+sub checkWordWW{
+        my $word = shift;
+
+        my $len = length($word);
+
+        if (($len % 2) == 0){
+            my $firsthalf = substr ($word, 0, $len/2);
+            my $secondhalf = substr ($word, $len/2);
+            if ($firsthalf eq $secondhalf) { return 1; }
+               else {return 0};
+        } else
+         { return 0; }
+}
+
+sub makeOtherWordsWW{
+    my $maxcount = shift;
+        my $maxlength = shift;
+        my @letters = @_;
+
+        my @otherwords;
+
+    my $newl=1;
+    my $levelct=$#letters+1;
+    my $lev=1;
+    while ( ($#otherwords+1 < $maxcount) && $newl < $maxlength ){
+        my $newword = grammar::randomWord($newl, @letters);
+
+        if ( !checkWordWW($newword) ){ @otherwords = grammar::addWord($newword,@otherwords);}
+        $lev++;
+        if($lev > $levelct) {
+            $newl++;
+            $levelct *= $#letters+1;
+            $lev=1;
+            }
+        }
+    # sort by length
+    @otherwords = sort { length($a) <=> length($b) } @otherwords;
+    return @otherwords;
+}
+
+# delivers $number words / 2* $number other words for WW in one string, words separated by %
+# words separated by # from other words
+sub wordsWW{
+    my $number = shift;
+        my $maxlength = shift;
+    my @letters = @_;
+    my @words = makeWordsWW($number, $maxlength, @letters);
+    my @owords = makeOtherWordsWW(2*$number, $maxlength, @letters);
+    my $longword = grammar::concatenateWords("%",@words) . "!" . grammar::concatenateWords("%",@owords);
+
+        return $longword;
+}
+# a module should return a true value
+1;
+</script>
+</library>
+

@@ -1,0 +1,170 @@
+<library>
+<import importmode="" id="NumCon">/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries/Machine_Functions/NumberConverter.library</import>
+<script type="loncapa/perl">
+package MealyBinarySmoothing;
+#use strict;
+#use warnings;
+
+sub generate_test_word_string {
+  my $number_of_words = shift;
+  my $word_string = '01%10%001%010%011%1010010%00101101';
+  my $i = 7;
+
+  while ($i < $number_of_words) {
+    my $number = &main::random(1,255,1);
+    my $binary = NumberConverter::convert_decimal_to_binary($number);
+    my $padding = '';
+    for my $j (length($binary) + 1 .. 8) {
+      $padding .= 0;
+    }
+    $word_string .= '%' . $padding . $binary;
+    $i++;
+  }
+
+  return $word_string;
+}
+
+sub get_automaton_solution_string {
+  return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><!--Created with JFLAP 6.4.--><structure>
+  <type>mealy</type>
+  <automaton>
+    <!--The list of states.-->
+    <state id=\"0\" name=\"q0\">
+      <x>103.0</x>
+      <y>93.0</y>
+      <initial/>
+    </state>
+    <state id=\"1\" name=\"q1\">
+      <x>237.0</x>
+      <y>52.0</y>
+    </state>
+    <state id=\"2\" name=\"q2\">
+      <x>237.0</x>
+      <y>168.0</y>
+    </state>
+    <!--The list of transitions.-->
+    <transition>
+      <from>1</from>
+      <to>1</to>
+      <read>1</read>
+      <transout>1</transout>
+    </transition>
+    <transition>
+      <from>2</from>
+      <to>2</to>
+      <read>0</read>
+      <transout>0</transout>
+    </transition>
+    <transition>
+      <from>2</from>
+      <to>0</to>
+      <read>1</read>
+      <transout>0</transout>
+    </transition>
+    <transition>
+      <from>0</from>
+      <to>2</to>
+      <read>0</read>
+      <transout>0</transout>
+    </transition>
+    <transition>
+      <from>0</from>
+      <to>1</to>
+      <read>1</read>
+      <transout>1</transout>
+    </transition>
+    <transition>
+      <from>1</from>
+      <to>0</to>
+      <read>0</read>
+      <transout>1</transout>
+    </transition>
+  </automaton>
+</structure>";
+}
+
+sub get_automaton_solution_svg {
+  return "<imagesvg>
+        <svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"348pt\" height=\"198pt\" viewBox=\"0.00 0.00 348.19 197.60\">
+          <g id=\"graph0\" class=\"graph\" transform=\"scale(1 1) rotate(0) translate(4 193.596)\">
+            <title>automaton</title>
+            <polygon fill=\"white\" stroke=\"none\" points=\"-4,4 -4,-193.596 344.193,-193.596 344.193,4 -4,4\" />
+            <!-- start -->
+            <g id=\"node1\" class=\"node\">
+              <title>start</title>
+            </g>
+            <!-- 0 -->
+            <g id=\"node2\" class=\"node\">
+              <title>0</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"161.798\" cy=\"-76.7982\" rx=\"20.5982\" ry=\"20.5982\" />
+              <text text-anchor=\"middle\" x=\"161.798\" y=\"-73.0982\" font-family=\"Times,serif\" font-size=\"14.00\">s0</text>
+            </g>
+            <!-- start&#45;&gt;0 -->
+            <g id=\"edge1\" class=\"edge\">
+              <title>start-&gt;0</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M54.2366,-76.7982C76.1621,-76.7982 107.446,-76.7982 130.448,-76.7982\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"130.683,-80.2983 140.683,-76.7982 130.683,-73.2983 130.683,-80.2983\" />
+            </g>
+            <!-- 1 -->
+            <g id=\"node3\" class=\"node\">
+              <title>1</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"319.394\" cy=\"-131.798\" rx=\"20.5982\" ry=\"20.5982\" />
+              <text text-anchor=\"middle\" x=\"319.394\" y=\"-128.098\" font-family=\"Times,serif\" font-size=\"14.00\">s1</text>
+            </g>
+            <!-- 0&#45;&gt;1 -->
+            <g id=\"edge6\" class=\"edge\">
+              <title>0-&gt;1</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M179.069,-88.4892C191.308,-96.7463 208.792,-107.434 225.596,-113.798 245.962,-121.511 270.147,-126.064 288.721,-128.661\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"288.305,-132.136 298.67,-129.941 289.198,-125.193 288.305,-132.136\" />
+              <text text-anchor=\"middle\" x=\"240.596\" y=\"-125.598\" font-family=\"Times,serif\" font-size=\"14.00\">1 ; 1</text>
+            </g>
+            <!-- 2 -->
+            <g id=\"node4\" class=\"node\">
+              <title>2</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"319.394\" cy=\"-20.7982\" rx=\"20.5982\" ry=\"20.5982\" />
+              <text text-anchor=\"middle\" x=\"319.394\" y=\"-17.0982\" font-family=\"Times,serif\" font-size=\"14.00\">s2</text>
+            </g>
+            <!-- 0&#45;&gt;2 -->
+            <g id=\"edge5\" class=\"edge\">
+              <title>0-&gt;2</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M181.567,-70.0432C208.552,-60.3309 258.525,-42.3454 290.032,-31.0061\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"291.335,-34.2567 299.559,-27.577 288.965,-27.6703 291.335,-34.2567\" />
+              <text text-anchor=\"middle\" x=\"240.596\" y=\"-57.5982\" font-family=\"Times,serif\" font-size=\"14.00\">0 ; 0</text>
+            </g>
+            <!-- 1&#45;&gt;0 -->
+            <g id=\"edge7\" class=\"edge\">
+              <title>1-&gt;0</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M302.191,-119.722C289.986,-111.208 272.514,-100.218 255.596,-93.7982 235.276,-86.0874 211.089,-81.8027 192.503,-79.4641\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"192.879,-75.9844 182.547,-78.3282 192.085,-82.9393 192.879,-75.9844\" />
+              <text text-anchor=\"middle\" x=\"240.596\" y=\"-97.5982\" font-family=\"Times,serif\" font-size=\"14.00\">0 ; 1</text>
+            </g>
+            <!-- 1&#45;&gt;1 -->
+            <g id=\"edge2\" class=\"edge\">
+              <title>1-&gt;1</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M306.658,-148.492C301.895,-161.415 306.141,-174.596 319.394,-174.596 329.128,-174.596 334.003,-167.488 334.019,-158.593\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"337.409,-157.678 332.131,-148.492 330.528,-158.964 337.409,-157.678\" />
+              <text text-anchor=\"middle\" x=\"319.394\" y=\"-178.396\" font-family=\"Times,serif\" font-size=\"14.00\">1 ; 1</text>
+            </g>
+            <!-- 2&#45;&gt;0 -->
+            <g id=\"edge4\" class=\"edge\">
+              <title>2-&gt;0</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M299.466,-14.5012C280.13,-9.16449 249.62,-3.82449 225.596,-13.7982 207.17,-21.4477 191.349,-37.4204 180.196,-51.3677\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"177.132,-49.6162 173.873,-59.6977 182.707,-53.8484 177.132,-49.6162\" />
+              <text text-anchor=\"middle\" x=\"240.596\" y=\"-17.5982\" font-family=\"Times,serif\" font-size=\"14.00\">1 ; 0</text>
+            </g>
+            <!-- 2&#45;&gt;2 -->
+            <g id=\"edge3\" class=\"edge\">
+              <title>2-&gt;2</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M306.658,-37.4915C301.895,-50.4152 306.141,-63.5963 319.394,-63.5963 329.128,-63.5963 334.003,-56.4876 334.019,-47.5927\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"337.409,-46.6778 332.131,-37.4915 330.528,-47.9645 337.409,-46.6778\" />
+              <text text-anchor=\"middle\" x=\"319.394\" y=\"-67.3963\" font-family=\"Times,serif\" font-size=\"14.00\">0 ; 0</text>
+            </g>
+          </g>
+        </svg>
+      </imagesvg>";
+}
+
+1;
+</script>
+</library>
+

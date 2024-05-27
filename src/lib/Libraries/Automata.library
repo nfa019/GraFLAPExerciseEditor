@@ -1,0 +1,100 @@
+<library>
+<import id="ra" importmode=""> /res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries/ReadAutomaton.library</import>
+<script type="loncapa/perl">
+#use 5.014;
+#use strict;
+#use warnings;
+package Automata;
+
+#make set. set("001,0,01,000,0,01") => "{0,000,01,001}" // Peter Riegler
+sub set {
+    my ($str) = @_;
+    $str =~ s/{//g;
+    $str =~ s/}//g;
+    my @stra = split( /,/, $str );
+    my @newArray;
+    for ( my $i = 0 ; $i < @stra ; $i++ ) {
+        my $tstr         = $stra[$i];
+        my $notElOfArray = "true";
+        for ( my $j = 0 ; $j < @newArray ; $j++ ) {
+            if ( ( $newArray[$j] eq $tstr ) ) {
+                $notElOfArray = "false";
+            }
+        }
+        if ( $notElOfArray eq "true" ) {
+            push( @newArray, $tstr );
+        }
+    }
+
+    return "{" . join( ',', @newArray ) . "}";
+}
+
+# Read finite or push-down automaton from a jff string, give back a list of components
+sub readautomaton {
+    my $inputString = shift;
+    my @automaton = ReadAutomaton::readJFFAutomaton($inputString);
+    if (@automaton) {
+      return @automaton
+    }
+    @automaton = ReadAutomaton::readJFLAPAutomaton($inputString);
+    if (@automaton) {
+      return @automaton;
+    }
+}
+
+sub autostring{
+    my $inputString = shift;
+    my @autom = readautomaton($inputString);
+     my $solutionstring = "<p/> Automat:";
+   $solutionstring .= "<m> \\[ A = (\\{ $autom[1] \\}, \\{ $autom[2] \\},";
+   if ($autom[0] eq "pda") {
+        $autom[3] =~ s/Z/\\perp/;
+        $solutionstring .= "\\{ $autom[3] \\},";}
+   if ($autom[7] eq "d") {
+       $solutionstring .= "\\delta, $autom[5],"; }
+   else { $solutionstring .= "\\Delta, \\{ $autom[5] \\},"; }
+   $solutionstring .= "\\{ $autom[6] \\}) \\] </m>";
+   $solutionstring .= "mit den Übergängen: ";
+   $solutionstring .= $autom[8];
+
+    return $solutionstring;
+}
+
+sub samplesolution{
+    my $inputString = shift;
+    my $svgstring = shift;
+
+    my $solutionstring = "<p/> <b>Mögliche Lösung: </b> ";
+    $solutionstring .= autostring($inputString);
+    $solutionstring .= "und dem Zustandsdiagramm: ";
+    $solutionstring .= "<p/>" . $svgstring;
+
+    return $solutionstring;
+}
+
+sub comparejffs{
+    my $given = shift;
+    my $stud = shift;
+    my @autogiven = readautomaton($given);
+    my @autostud  = readautomaton($stud);
+    my $result = 0;
+
+    if ($autostud[0] eq 'fa' || $autostud[0] eq 'fsa') { $result++;}
+    if ( $autogiven[7] eq $autostud[7]) { $result++;}
+
+    for (my $i=1; $i < 7; $i++){
+        my $currentgiven = &main::cas('maxima',"set($autogiven[$i]);");
+        my $currentstud  = &main::cas('maxima',"set($autostud[$i]);");
+        my  $sub_program = "is($currentgiven=$currentstud);";
+        my $answer =&main::cas('maxima',$sub_program);
+        if($answer eq "true"){ $result++;}
+    }
+    if ($result < 8) { return 'INCORRECT'; }
+      else { return 'EXACT_ANS';}
+}
+
+# a module should return a true value
+1;
+</script>
+</library>
+

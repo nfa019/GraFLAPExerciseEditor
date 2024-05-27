@@ -1,0 +1,105 @@
+<library>
+<import importmode="" id="XML"> /res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries/XMLParse.library</import>
+<script type="loncapa/perl">
+package ComponentParse;
+
+sub retrieve_automation_component { # (data, tag, attribute)
+  my @elements = XMLParse::find_elements_by_tag_with_attribute(\@{$_[0]},
+                           "structure", $_[1]);
+  my @tmp_result = XMLParse::get_content_of_element_with_attribute
+                             (\@{$elements[0]}, $_[1]);
+  @tmp_result = XMLParse::find_elements_by_tag(\@tmp_result, $_[2]);
+  my @components;
+  foreach (@tmp_result) {
+  my @array = split("\n",$_);
+  push @components, XMLParse::get_content_of_element(\@array);
+  }
+  return @components;
+}
+
+sub retrieve_alphabet { # (data)
+  return retrieve_automation_component(\@{$_[0]}, "type=\"input_alph\"",
+                                       "symbol");
+}
+
+sub retrieve_stack_alphabet { # (data)
+  return retrieve_automation_component(\@{$_[0]}, "type=\"stack_alph\"",
+                                       "symbol");
+}
+
+sub retrieve_states { # (data)
+  return retrieve_automation_component(\@{$_[0]}, "type=\"state_set\"", "name");
+}
+
+sub retrieve_start_state { # (data)
+  my @data = @{$_[0]};
+  return retrieve_automation_component(\@data, "type=\"start_state\"", "name");
+}
+
+sub retrieve_final_states { # (data)
+  return retrieve_automation_component(\@{$_[0]}, "type=\"final_states\"",
+                                       "name");
+}
+
+sub retrieve_transition_set { # (data)
+  my @elements = XMLParse::find_elements_by_tag_with_attribute(\@{$_[0]},
+                           "structure", "type=\"transition_set\"");
+  return XMLParse::get_content_of_element_with_attribute(\@{$elements[0]},
+                   "type=\"transition_set\"");
+}
+
+sub retrieve_transitions { # (data, tag, automaton_type)
+  my @transition_set = retrieve_transition_set(\@{$_[0]});
+  my @tmp_result = XMLParse::find_elements_by_tag(\@transition_set, $_[1]);
+  my @transitions;
+  foreach(@tmp_result) {
+    my @transition = @{$_};
+    my @components;
+    push @components, find_get_state_name(\@transition, "from");
+    push @components, find_element_and_get_content(\@transition, "input");
+    if ($_[2] eq "pda") {
+      push @components, find_element_and_get_content(\@transition, "pop");
+      push @components, find_get_state_name(\@transition, "to");
+      push @components, find_element_and_get_content(\@transition, "push");
+    } else {
+      push @components, find_get_state_name(\@transition, "to");
+    }
+    push @transitions, \@components;
+  }
+  return @transitions;
+}
+
+sub retrieve_pda_transitions { # (data)
+  return retrieve_transitions(\@{$_[0]}, "transition", "pda");
+}
+
+sub retrieve_fsa_transitions { # (data)
+    return retrieve_transitions(\@{$_[0]}, "fsa_trans", "fsa");
+}
+
+sub retrieve_automaton_type { # (data)
+  my @element = XMLParse::find_elements_by_tag_with_attribute(\@{$_[0]},
+                          "structure", "mode=\"Default mode\"");
+  return XMLParse::get_attribute_from_element(@element[0], "type");
+}
+
+sub find_element_and_get_content { # (transition, tag)
+  my @content = XMLParse::find_elements_by_tag(\@{$_[0]}, $_[1]);
+  my $result = XMLParse::get_content_of_element(\@content);
+  if ($result eq '') {
+    return 'E';
+  } else {
+    return $result;
+  }
+}
+
+sub find_get_state_name { # (transition, tag)
+  my @content = XMLParse::find_elements_by_tag(\@{$_[0]}, $_[1]);
+  my @name = XMLParse::find_elements_by_tag(@content[0], "name");
+  return XMLParse::get_content_of_element(\@name);
+}
+
+1;
+</script>
+</library>
+

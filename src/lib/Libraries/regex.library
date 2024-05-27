@@ -1,0 +1,264 @@
+<library>
+<script type="loncapa/perl">
+package RegEx;
+$max_random =1;
+#Generiert ein passendes Wort zu dem uebergebenden RegEx.
+sub generate {
+	($regEx,$maxr) = @_;
+	$max_random = $maxr;
+	#$regEx =~ s/(\([^()]+\)(\*|\+|))/$1/;
+	do {
+		if ( $regEx =~ m/(\([^()]+\)(\*|\+|))/ ) {
+			
+			$regEx =~ s/(\([^()]+\)(\*|\+|))/$1/;
+			$solve = &solve($1);			
+		}
+
+		
+	} while ( $regEx =~ s/(\([^()]+\)(\*|\+|))/$solve/ );
+
+	if ( $regEx =~ m/\|/ ) {
+		$regEx = &solve( "\(" . $regEx . "\)" );
+	}
+	if ( $regEx =~ m/(\+)|(\*)/ ) {
+		$regEx = &solve( "\(" . $regEx . "\)" );
+	}
+	return $regEx;
+}
+
+# if (..|.)* or (.|..)+ or (.|..)
+sub solve {
+	my ($sub_str) = @_;
+
+	my $lastchar = substr( $sub_str, length($sub_str) - 1, length($sub_str) );
+
+  SWITCH: {
+		$lastchar eq "*" && do {
+			my $random = &main::random( 0, $max_random, 1 );
+
+			#$random  = 5;
+			$sub_str = substr( $sub_str, 1, length($sub_str) - 3 );
+
+			$sub_str = &genRandStringOR( $sub_str, $random );
+
+			return $sub_str;
+			last SWITCH;
+		};
+		$lastchar eq "+" && do {
+			my $random = &main::random( 1, $max_random, 1 );
+
+			#$random  = 5;
+			$sub_str = substr( $sub_str, 1, length($sub_str) - 3 );
+			$sub_str = &genRandStringOR( $sub_str, $random );
+
+			return $sub_str;
+			last SWITCH;
+		};
+		do {
+
+			$sub_str = substr( $sub_str, 1, length($sub_str) - 2 );
+			$sub_str = &genRandStringOR( $sub_str, 1 );
+			return $sub_str;
+			last SWITCH;
+		};
+	}
+
+}
+
+#(..|.) or (....)
+sub genRandStringOR {
+	my ($str, $random ) = @_;
+	my $substr = "";
+
+	# (...|...)
+	if ( index( $str, "\|" ) != -1 ) {
+
+		my @splitSubString = split( /\|/, $str );
+		for (my $j = 0 ; $j <= $#splitSubString; $j++ ) {
+			$splitSubString[$j] = &solveStPlProblem( $splitSubString[$j] );
+		}
+		for (my $i = 0 ; $i < $random ; $i++ ) {
+			my $r_ = &main::random( 0, $#splitSubString, 1 );
+			$substr .= $splitSubString[$r_];
+		}
+	}
+	else {
+		my $substr1 = &solveStPlProblem($str);
+		for (my $i = 0 ; $i < $random ; $i++ ) {
+			$substr .= $substr1;
+		}
+	}
+	return $substr;
+}
+
+# if (.*..) or (.+..) or (...)
+sub solveStPlProblem {
+	my ($str) = @_;
+
+	my $length = length($str);
+	for (my $k = 0 ; $k < length($str) ; $k++ ) {
+		my $char = substr( $str, $k, 1 );
+	  SWITCH: {
+			$char eq "*" && do {
+				my $random1 = &main::random( 0, $max_random, 1 );
+
+				#$random1 = 5;
+				my $sub_str =
+				  &genRandString( substr( $str, $k - 1, 1 ), $random1 );
+				my $s1 = substr( $str, 0, $k - 1 );
+				my $s2 = substr( $str, $k + 1, length($str) );
+				$str = $s1 . $sub_str . $s2;
+
+				last SWITCH;
+			};
+			$char eq "+" && do {
+				my $random1 = &main::random( 1, $max_random, 1 );
+
+				#$random1 = 5;
+				my $sub_str =
+				  &genRandString( substr( $str, $k - 1, 1 ), $random1 );
+				my $s1 = substr( $str, 0, $k - 1 );
+				my $s2 = substr( $str, $k + 1, length($str) );
+				$str = $s1 . $sub_str . $s2;
+				last SWITCH;
+			};
+			do {
+				last SWITCH;
+			};
+		}
+		$length = length($str);
+	}
+	return $str;
+
+}
+
+sub genRandString {
+	my ( $str1, $random ) = @_;
+	my $substr = "";
+	for ( my $i = 0 ; $i < $random ; $i++ ) {
+		$substr .= $str1;
+	}
+	return $substr;
+}
+
+
+#checks whether $x is member of @list or whether $x is the empty word
+sub isInRegExListe {
+	my ($x) = shift;
+        my @list = @_;
+	if($x eq ""){
+		return true;
+	}
+	for ( my $j = 0 ; $j < @list ; $j++ ) {
+		if ($x eq $list[$j]) {
+			return "true";
+		}
+	}
+	return "false";
+}
+
+#generates $max_samples many sample words out of a language descriped by regex $regexdescription
+#maximum word length is $max_length
+sub LanguageSampling{
+  my ($regexdescription, $max_length, $max_samples) = @_;
+  my @regexlist=();
+  my $l = 0;
+  my $regex;
+  my $count = 0;
+  while ( $l < $max_samples and $count < 500 ) {
+	#Do at most 100 tries in order to avoid endless loop is
+	#language is finite.
+	$count ++; 
+	$regex = generate($regexdescription,$max_length);
+	if ( length($regex) < $max_length ) {
+		if ( &isInRegExListe($regex,@regexlist) eq "false" ) {
+
+			my $temp = $regex;
+			push( @regexlist, $temp );
+			$l++;				
+		}
+	}
+  }
+return @regexlist;
+}
+
+#do grading for given $alphabet, student $submission of regex and sample list @regExListe of words
+sub gradewithsamplesOLD{
+   my $submission = shift;
+   my $alphabet = shift;
+   my @regExListe = @_;
+
+   if (($submission =~ m/^([\(,\),\|,\+,\*,$alphabet]+)$/g) ne '1'){
+             return 'BAD_FORMULA';
+   }else{
+     for ( my $j = 0 ; $j < @regExListe ; $j++ ) {
+       
+         if (!($regExListe[$j]=~ m/^($submission)$/)){
+             return 'INCORRECT';
+         }
+	}
+   }
+   return 'EXACT_ANS';
+}
+
+sub correctregexsyntax{
+	my $regex = shift;
+	my $correctness = 'wrong';
+	eval {$correctness = 'foo' =~ m/$regex/};
+	if($correctness eq 'wrong'){
+		return 0;
+	}else{
+		return 1;
+	}
+}
+
+sub gradewithsamples{
+   my $response = shift;
+   my $alphabet = shift;
+   my $answer = shift;
+   my $maxstringlength = shift;
+   my $maxcases = shift;
+   my @answerlanguage = LanguageSampling($answer,$maxstringlength,$maxcases);
+   my @responselanguage = LanguageSampling($response,$maxstringlength,$maxcases);
+
+   return 'BAD_FORMULA' unless correctregexsyntax($response);
+   
+   if (($response =~ m/^([\(,\),\|,\+,\*,$alphabet]+)$/g) ne '1'){
+             return 'BAD_FORMULA';
+   }else{
+     foreach my $word (@answerlanguage) {
+         if (!($word=~ m/^($response)$/)){
+             return 'INCORRECT';
+         }
+	}
+     foreach my $word (@responselanguage) {
+         if (!($word=~ m/^($answer)$/)){
+             return 'INCORRECT';
+         }
+	}
+   }
+   return 'EXACT_ANS';
+}
+
+#remove all epsilons
+sub deleteepsilon{
+   my $word = shift;
+   $word =~ s/ε/e/g; 
+   $word =~ s/e\*|e\+|e//g;
+   return $word;
+}
+
+#remove empty strings when acting as neutral element of concatenation
+sub removeonlyconcatepsilon{
+   my $word = shift;
+   $word =~ s/ε/e/g;
+   $word =~ s/\|e+/|EPS/g;
+   $word =~ s/e+\|/EPS|/g;
+   $word =~ s/e//g;
+   $word =~ s/EPS/e/g;
+   return $word;
+}
+</script>
+</library>
+
+

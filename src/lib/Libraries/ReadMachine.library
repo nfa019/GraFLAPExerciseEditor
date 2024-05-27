@@ -1,0 +1,266 @@
+<library>
+<import importmode="" id="XML"> /res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries/XMLParse.library</import>
+<script type="loncapa/perl">
+package ReadMachine;
+
+#make a string from a list of strings
+sub listToString{
+    my @list = @_;
+    my $string = "";
+    foreach (@list){
+        $string .= $_ . ",";
+    }
+    chop($string);
+    return $string;
+}
+
+sub retrieve_automaton_type {
+  my @data = @{$_[0]};
+  my @type = XMLParse::find_elements_by_tag(\@data, 'type');
+  return XMLParse::get_content_of_element(\@type);
+}
+
+sub retrieve_state_elements {
+  my @data = @{$_[0]};
+  return XMLParse::find_elements_by_tag(\@data, 'state');
+}
+
+sub retrieve_states {
+  my @data = @{$_[0]};
+  my @states;
+  foreach(@data) {
+    my @state = @{$_};
+    $name = XMLParse::get_attribute_from_element(\@state, 'name');
+    push @states, $name;
+  }
+  return @states;
+}
+
+sub retrieve_transition_elements {
+  my @data = @{$_[0]};
+  return XMLParse::find_elements_by_tag(\@data, 'transition');
+}
+
+sub retrieve_alphabet {
+  my @data = @{$_[0]};
+  my $tag = $_[1];
+  my %alphabet;
+  foreach(@data) {
+    my @transition = @{$_};
+    my @read = XMLParse::find_elements_by_tag(\@transition, $tag);
+    $alphabet{XMLParse::get_content_of_element(\@read)} = 1;
+  }
+  return keys %alphabet;
+}
+
+sub retrieve_input_alphabet {
+  return retrieve_alphabet(\@{$_[0]}, 'read');
+}
+
+sub retrieve_output_alphabet {
+  return retrieve_alphabet(\@{$_[0]}, 'transout');
+}
+
+sub find_element_and_get_content {
+  my @data = @{$_[0]};
+  my $tag = $_[1];
+  my @element = XMLParse::find_elements_by_tag(\@data, $tag);
+  if (@element) {
+    return XMLParse::get_content_of_element(\@element);
+  } else {
+    return 'L';
+  }
+}
+
+sub find_state_name_to_id {
+  my @states = @{$_[0]};
+  my $id = $_[1];
+  foreach(@states) {
+    my @state = @{$_};
+    my $state_id = XMLParse::get_attribute_from_element(\@state, 'id');
+    if ($id eq $state_id) {
+      return XMLParse::get_attribute_from_element(\@state, 'name');
+    }
+  }
+  die "Error in readMachine: Could not find the state name to the id";
+}
+
+sub retrieve_transition_information {
+  my @data = @{$_[0]};
+  my @state_elements = @{$_[1]};
+  my @transitions;
+  my @tex_transitions;
+  foreach(@data) {
+    my @transition = @{$_};
+    my $from = find_element_and_get_content(\@transition, 'from');
+    $from = find_state_name_to_id(\@state_elements, $from);
+    my $input = find_element_and_get_content(\@transition, 'read');
+    my $to = find_element_and_get_content(\@transition, 'to');
+    $to = find_state_name_to_id(\@state_elements, $to);
+    push @transitions, '(' . $from . ',' . $input . ',' . $to . ')';
+    push @tex_transitions, "\\ \\delta(" . $from . ",". $input . ") = ". $to;
+  }
+  my $tex_string = '<m>\\[' . ReadMachine::listToString(@tex_transitions) . '\\]</m>';
+
+  return ($tex_string, @transitions);
+}
+
+sub retrieve_mealy_output_information {
+  my @data = @{$_[0]};
+  my @state_elements = @{$_[1]};
+  my @output_values;
+  my @tex_output;
+  foreach(@data) {
+    my @output = @{$_};
+    my $from = find_element_and_get_content(\@output, 'from');
+    $from = find_state_name_to_id(\@state_elements, $from);
+    my $input = find_element_and_get_content(\@output, 'read');
+    my $transout = find_element_and_get_content(\@output, 'transout');
+    push @output_values, '(' . $from . ',' . $input . ',' . $transout . ')';
+    push @tex_output, "\\ \\lambda(" . $from . ",". $input . ") = ". $transout;
+  }
+  my $tex_string = '<m>\\[' . ReadMachine::listToString(@tex_output) . '\\]</m>';
+  return ($tex_string, @output_values);
+}
+
+sub retrieve_moore_output_information {
+  my @state_elements = @{$_[0]};
+  my @output_values;
+  my @tex_output;
+  foreach(@state_elements) {
+    my @output = @{$_};
+    my $to = XMLParse::get_attribute_from_element(\@output, 'name');
+    my $transout = find_element_and_get_content(\@output, 'output');
+    push @output_values, '(' . $to . ',' . $transout . ')';
+    push @tex_output, "\\ \\lambda(" . $to . ") = ". $transout;
+  }
+  my $transition_string = ReadMachine::listToString(@output_values);
+  my $tex_string = '<m>\\[' . ReadMachine::listToString(@tex_output) . '\\]</m>';
+  return ($transition_string, $tex_string);
+}
+
+sub find_start_state {
+  my @state_elements = @{$_[0]};
+  my @starts;
+  foreach(@state_elements) {
+    my @state = @{$_};
+    foreach(@state) {
+      $row = trim($_);
+      if ($row =~ /<initial\/>/) {
+        push @starts, XMLParse::get_attribute_from_element(\@state, 'name');
+      }
+    }
+  }
+  return @starts;
+}
+
+sub trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s }
+
+sub readJFFMachine {
+  my $jffString = shift;
+  my @data_array = split("\n", $jffString);
+  my @machine;
+  $machine[0] = retrieve_automaton_type(\@data_array); # type
+  my @state_elements = retrieve_state_elements(\@data_array);
+  my @states = retrieve_states(\@state_elements);
+  $machine[1] = listToString(@states); # states
+  my @transition_elements = retrieve_transition_elements(\@data_array);
+  my @input_alphabet = retrieve_input_alphabet(\@transition_elements);
+  $machine[2] = listToString(@input_alphabet); # input
+  my @output_alphabet = retrieve_output_alphabet(\@transition_elements);
+  $machine[3] = listToString(@output_alphabet); # output
+  my @transitions;
+  ($machine[7], @transitions) = retrieve_transition_information(\@transition_elements, \@state_elements); # transition
+  $machine[4] = ReadMachine::listToString(@transitions);
+
+  if ($machine[0] eq 'mealy') {
+    my @output;
+    ($machine[8], @output) = retrieve_mealy_output_information(\@transition_elements, \@state_elements); # output
+    $machine[5] = listToString(@output);
+    $machine[8] = build_transition_tex($machine[0], \@states, \@input_alphabet, \@output, $machine[8], "\\lambda");
+  } elsif ($machine[0] eq 'moore') {
+    ($machine[5], $machine[8]) = retrieve_moore_output_information(\@state_elements); # output
+  }
+  $machine[6] = listToString(find_start_state(\@state_elements));
+  $machine[7] = build_transition_tex($machine[0], \@states, \@input_alphabet, \@transitions, $machine[7], "\\delta");
+
+  return @machine;
+}
+
+sub build_transition_tex {
+  my $type = $_[0];
+  my @states = @{$_[1]};
+  my @alphabet = @{$_[2]};
+  my @transitions = @{$_[3]};
+  my $fktTransitions = $_[4];
+  my $delta = $_[5];
+
+  my $components;
+
+  my $numSt = $#states + 1;
+  my $numLt = $#alphabet + 1;
+  # initialize table of transitions
+  my @table;
+  for (my $i=0; $i < $numLt; $i++) {
+      for (my $j=0; $j < $numSt; $j++) {
+          @table[$numSt*$i+$j] ="-";
+      }
+  }
+
+  foreach my $trans (@transitions) {
+    chop($trans);
+    $trans = substr($trans,1);
+    my @trlist = split(",",$trans);
+    my $i = 0;
+    my $indexState;
+    foreach my $st (@states) {
+      if ($st eq $trlist[0]) {
+        $indexState = $i;
+        last;
+      }
+      $i++;
+    }
+    my $indexLetter;
+    $i=0;
+    foreach my $lt (@alphabet) {
+      if ($lt eq $trlist[1]) {
+        $indexLetter = $i;
+        last;
+      }
+      $i++;
+    }
+    if ($table[$numSt*$indexLetter+$indexState] eq "-") {
+      $table[$numSt*$indexLetter+$indexState] = $trlist[2];
+    } else {
+      $table[$numSt*$indexLetter+$indexState] .= ",".$trlist[2];
+    }
+  }
+  # make tex table of transitions
+
+  $components = $fktTransitions . "\n";
+  $components .= "<p/> Als Tabelle:\n";
+  my $textable = "<m>\\[ \\begin{array}{c|";
+  foreach (my $i = 0; $i < $numSt; $i++) { $textable .= "c" ; }
+  $textable .= "} \n ". $delta ;
+  foreach (@states) { $textable .= " & " . $_ ; }
+  $textable .= " \\\\\\\\ \\hline ";
+  my $i=0;
+  foreach my $lt (@alphabet) {
+      $textable .= "\n " . $lt ;
+      foreach (my $j = 0; $j < $numSt; $j++) {
+          $textable .= " & " . $table[$numSt*$i+$j] ;
+      }
+      $i++;
+      $textable .= " \\\\\\\\";
+  }
+  $textable .= "\n \\end{array} \\] </m>";
+  $components .= $textable;
+
+  $components =~ s/E/\\varepsilon/g;
+  return $components;
+}
+
+# a module should return a true value
+1;
+</script>
+</library>

@@ -1,0 +1,99 @@
+<library>
+
+<script type="loncapa/perl">
+if ($type<1) {
+  if ( $det = 1) {
+
+</script>
+<startouttext />
+
+<translated>
+<lang which="de">und die Übergangsfunktion</lang>
+<lang which="en">and the transition function</lang>
+<lang which="default">and the transition function</lang>
+</translated>
+(delta).<p />
+
+
+<translated>
+<lang which="de">Geben Sie dort die Elemente wie folgt an <b>(vonZustand, eingabe, nachZustand)</b>. Benutzen Sie ggf. E für das leere Wort.<p />
+z.B. (s0,a,s1),(s1,b,s2), usw.
+</lang>
+<lang which="en">Write the elements as <b>(fromState, input, toState)</b>. Use E for the empty word, if applicable. <p />
+e.g. (s0,a,s1),(s1,b,s2) and so on.
+</lang>
+<lang which="default">Write the elements as <b>(fromState, input, toState)</b>. Use E for the empty word, if applicable.<p />
+e.g. (s0,a,s1),(s1,b,s2) and so on.
+</lang>
+</translated>
+<p />
+<endouttext />
+<script type="loncapa/perl">
+}
+if ( $det < 1) {
+</script>
+
+<startouttext />
+
+<translated>
+<lang which="de">und die Übergangsrelation</lang>
+<lang which="en">and the transition relation</lang>
+<lang which="default">and the transition relation</lang>
+</translated>
+(delta).<p />
+<translated>
+<lang which="de">Geben Sie dort die Elemente wie folgt an <b>(vonZustand, eingabe, nachZustand)</b>. Benutzen Sie ggf. E für das leere Wort.<p />
+z.B. (s0,a,s1),(s1,E,s2), usw.
+</lang>
+<lang which="en">Write the elements as <b>(fromState, input, toState)</b>. Use E for the empty word, if applicable. <p />
+e.g. (s0,a,s1),(s1,E,s2) and so on.
+</lang>
+<lang which="default">Write the elements as <b>(fromState, input, toState)</b>. Use E for the empty word, if applicable.<p />
+e.g. (s0,a,s1),(s1,E,s2) and so on.
+</lang>
+</translated>
+<p />
+<endouttext />
+<script type="loncapa/perl">
+  }
+}
+
+if ($type) {
+</script>
+
+
+
+  <startouttext />
+<translated>
+<lang which="de">und die Übergangsrelation</lang>
+<lang which="en">and the transition relation</lang>
+<lang which="default">and the transition relation</lang>
+</translated>
+(delta).
+<p />
+<translated>
+<lang which="de">Geben Sie dort die Elemente wie folgt an <b>(vonZustand, eingabe, zeichenAusKeller, nachZustand, wortInKeller)</b>. Benutzen Sie Z als Keller-Bottomsymbol und ggf. E für das leere Wort.<p />
+z.B. (s0,a,E,s1, aa),(s1, b, a,s2, E), (s1, b, Z,s2, b ), usw.
+</lang>
+<lang which="en">Write the elements as <b>(fromState, input, pop, toState, push)</b>. Use Z for the bottm symbol and E for the empty word, if applicable. <p />
+e.g. (s0,a,E,s1, aa),(s1, b, a,s2, E), (s1, b, Z,s2, b ) and so on.
+</lang>
+<lang which="default">Write the elements as <b>(fromState, input, pop, toState, push)</b>. Use Z for the bottm symbol and E for the empty word, if applicable. <p />
+e.g. (s0,a,E,s1, aa),(s1, b, a,s2, E), (s1, b, Z,s2, b ) and so on.
+</lang>
+</translated>
+<p />
+<endouttext />
+<script type="loncapa/perl">
+}
+</script>
+
+
+ <solved><startouttext /><p />
+
+$transitionsTeX
+
+<endouttext /></solved>
+</library>
+
+

@@ -1,0 +1,348 @@
+<library>
+<script type="loncapa/perl">
+#use 5.014;
+#use strict;
+#use warnings;
+package jffautomata;
+
+#adds a word to a list (only if it is new)
+sub addWord{
+	my $word = shift;
+	my @list = @_;
+	my $inList = 0;
+	#remove empty words
+	if (( $word =~ m/€/ )) {$word =~ s/€//g; }
+	foreach (@list) { if ($word eq $_) { $inList=1; last;} }
+	if (!$inList) { 
+		$list[$#list+1] = $word;
+		}
+	@list = sort  (@list);
+	return @list;
+}
+
+#adds a word to a list (only if it is new)
+sub addWordStack{
+	my $word = shift;
+	my @list = @_;
+        my $len = length($word);
+        for (my $i=0; $i < $len; $i++){
+           my $character = substr($word, $i, 1);
+           @list = addWord($character, @list);
+            }
+	return @list;
+}
+
+
+#make a string from a list of strings
+sub listToString{
+	my @list = @_;
+	my $string = "";
+	foreach (@list){
+		$string .= $_ . ",";
+	}
+	chop($string);
+	return $string;
+}
+
+#make set. set("001,0,01,000,0,01") => "{0,000,01,001}" // Peter Riegler
+sub set {
+	my ($str) = @_;
+	$str =~ s/{//g;
+	$str =~ s/}//g;
+	my @stra = split( /,/, $str );
+	my @newArray;
+	for ( my $i = 0 ; $i < @stra ; $i++ ) {
+		my $tstr         = $stra[$i];
+		my $notElOfArray = "true";
+		for ( my $j = 0 ; $j < @newArray ; $j++ ) {
+			if ( ( $newArray[$j] eq $tstr ) ) {
+				$notElOfArray = "false";
+			}
+		}
+		if ( $notElOfArray eq "true" ) {
+			push( @newArray, $tstr );
+		}
+	}
+
+	return "{" . join( ',', @newArray ) . "}";
+}
+
+# Read finite or push-down automaton from a jff string, give back a list of components
+sub readautomaton{
+	my $jffString = shift;
+	
+	my $typeOfAutomaton="";	
+	my @automaton;
+
+	
+	$jffString =~ s/\n|\r//g; # remove new lines
+	
+	# read type of automaton (pda or fa - finite automaton)
+	if($jffString =~/(<type.*?\/type>)/g){
+		$typeOfAutomaton=substr($1, 6, length($1)-13);
+		}
+		
+	$automaton[0] = $typeOfAutomaton;
+	
+	if (($typeOfAutomaton eq "pda") || ($typeOfAutomaton eq "fa")){
+		my @jffstates;
+		my @states;
+		my @alphabet;
+		my @stackalphabet;
+		my @initials;
+		my @finals;
+		my @transitions;
+		my @texTransitions;
+		my @fktTransitions;
+		my $epsauto=0; 
+	
+		# find all states, all initial and final states
+		while($jffString =~/(<state id.*?\/state>)/g){
+			my $stateString = $1;
+			my $numberState;
+			my $nameState;
+			if($stateString =~/(id=\".*?\")/g){ 
+				$numberState = substr($1, 4, length($1)-5);
+				}
+			if($stateString =~/(name=\".*?\")/g){ 
+				$nameState = substr($1, 6, length($1)-7);
+				}
+			$jffstates[++$#jffstates] = $numberState;
+			$states[++$#states] = $nameState;
+			if ($stateString =~/(initial)/g){ $initials[++$#initials] = $nameState; }
+			if ($stateString =~/(final)/g){ $finals[++$#finals] = $nameState; }
+		}
+		
+		# find all transitions and the alphabet
+		while($jffString =~/(<transition.*?\/transition>)/g){
+			my $transString = $1;
+			my $letter ="";
+			my $fromState ="";
+			my $toState ="";
+			my $push = "";
+			my $pop = "";
+			if ($transString =~/(<from>.*?<\/from>)/g){ 
+				$fromState = substr($1, 6, length($1)-13);
+				}
+			if ($transString =~/(<to>.*?<\/to>)/g){ 
+				$toState = substr($1, 4, length($1)-9);
+				}			
+			if ($transString =~/(<read>.*?<\/read>)/g){ 
+				$letter = substr($1, 6, length($1)-13);
+				@alphabet=addWord($letter,@alphabet);
+				} elsif ($transString =~/(<read\/>)/g){ 
+					$letter = "E";
+					$epsauto = 1;
+				}
+			if ($typeOfAutomaton eq "pda"){	
+				$stackalphabet[0] = "Z";
+				if ($transString =~/(<pop>.*?<\/pop>)/g){ 
+					$pop = substr($1, 5, length($1)-11);
+					@stackalphabet = addWord($pop,@stackalphabet);
+					} elsif ($transString =~/(<pop\/>)/g){ 
+						$pop = "E";
+					}
+				if ($transString =~/(<push>.*?<\/push>)/g){ 
+					$push = substr($1, 6, length($1)-13);
+                                        @stackalphabet = addWordStack($push, @stackalphabet);
+      					} elsif ($transString =~/(<push\/>)/g){ 
+						$push = "E";
+					}	
+				$push = "," . $push;		
+				$pop = "," . $pop;
+				}	
+				
+			my $fromName = "";
+			my $toName = "";
+			my $i=0;
+			foreach my $numState (@jffstates){
+				if ($numState eq $fromState){ $fromName = $states[$i];}
+				if ($numState eq $toState){ $toName = $states[$i];}
+				$i++;
+				}
+			#say "(" . $fromName . ",". $letter . $pop . ",". $toName . $push .")";
+			$transitions[++$#transitions] = "(" . $fromName . ",". $letter . $pop .",". $toName . $push .")";
+			if ($typeOfAutomaton eq "pda"){	
+				$texTransitions[++$#texTransitions] = "\\ (" . $fromName . ",". $letter . $pop .") \\Delta (". $toName . $push .")";
+				} else {
+				$texTransitions[++$#texTransitions] = "\\ (" . $fromName . ",". $letter . ") \\Delta ". $toName ;
+				$fktTransitions[++$#fktTransitions] = "\\ \\delta(" . $fromName . ",". $letter . ") = ". $toName ;				
+				}
+			}
+		
+				
+		$automaton[1] = listToString(@states);
+		$automaton[2] = listToString(@alphabet);
+		$automaton[3] = listToString(@stackalphabet);
+		$automaton[4] = listToString(@transitions);
+		$automaton[5] = listToString(@initials);
+		$automaton[6] = listToString(@finals);
+		# default: non-deterministic
+		$automaton[7] = "nd";  
+		
+		
+		#TexOutput
+		my $deterministic;
+		if ($typeOfAutomaton eq "pda"){
+			$automaton[8] = "<m>\\[ " . listToString(@texTransitions) . "\\] </m>";
+			$automaton[8] =~ s/Z/\\perp/g;
+			}else{ 
+				# finite automaton
+			if ($epsauto){ 
+				$alphabet[++$#alphabet] = "E";
+				$deterministic = 0;
+				}else{
+				$deterministic = 1;
+			}
+					
+			my $numSt = $#states + 1;
+			my $numLt = $#alphabet + 1;
+			# initialize table of transitions
+			my @table;
+			for (my $i=0; $i < $numLt; $i++){
+				for (my $j=0; $j < $numSt; $j++){
+					@table[$numSt*$i+$j] ="-";
+					}
+				}
+			
+			foreach my $trans (@transitions){
+				chop($trans);
+				$trans = substr($trans,1);
+				my @trlist = split(",",$trans);
+				my $i = 0;
+				my $indexState;
+				foreach my $st (@states){
+					if ($st eq $trlist[0]){ 
+						$indexState = $i;
+						last;
+						}
+					$i++;
+					}
+				my $indexLetter;
+				$i=0;
+				foreach my $lt (@alphabet){
+					if ($lt eq $trlist[1]){ 
+						$indexLetter = $i;
+						last;
+						}
+					$i++;
+					}
+				if ($table[$numSt*$indexLetter+$indexState] eq "-"){
+					$table[$numSt*$indexLetter+$indexState] = $trlist[2];
+					}else{
+					$table[$numSt*$indexLetter+$indexState] .= ",".$trlist[2];
+					$deterministic = 0;
+					}
+				}
+			# make tex table of transitions
+			my $delta = "";
+			if ($deterministic){
+				$delta = "\\delta";
+				$automaton[7] = "d";  
+				$automaton[8] = "<m>\\[ " . listToString(@fktTransitions) . "\\] </m> \n";
+				}else{
+				$delta = "\\Delta";
+				$automaton[8] = "<m>\\[ " . listToString(@texTransitions) . "\\] </m>\n";
+				foreach my $ta (@table){
+					if ($ta =~/,/){ $ta = "\\{". $ta . "\\}"; }
+					}
+				}
+			$automaton[8] .= "<p/> Als Tabelle: \n";
+			my $textable = "<m>\\[ \\begin{array}{c|";
+			foreach (my $i = 0; $i < $numSt; $i++){ $textable .= "c" ; }
+			$textable .= "} \n ". $delta ;
+			foreach (@states) { $textable .= " & " . $_ ; }
+			$textable .= " \\\\\\\\ \\hline ";
+			my $i=0;
+			foreach my $lt (@alphabet){
+				$textable .= "\n " . $lt ;
+				foreach (my $j = 0; $j < $numSt; $j++){ 
+					$textable .= " & " . $table[$numSt*$i+$j] ; 
+					}
+				$i++;
+				$textable .= " \\\\\\\\";
+				}
+			$textable .= "\n \\end{array} \\] </m>";	
+			$automaton[8] .= $textable;
+		}
+
+			$automaton[8] =~ s/E/\\varepsilon/g;
+			
+	}
+	return @automaton;
+	
+}
+
+
+sub autostring{
+    my $jffstring = shift;
+    my @autom = readautomaton($jffstring);
+     my $solutionstring = "Automat: ";
+   $solutionstring .= "<m> \\[ A = (\\{ $autom[1] \\}, \\{ $autom[2] \\},";
+   if ($autom[0] eq "pda") { 
+        $autom[3] =~ s/Z/\\perp/;
+        $solutionstring .= "\\{ $autom[3] \\},";}
+   if ($autom[7] eq "d") {
+       $solutionstring .= "\\delta, $autom[5],"; }
+   else { $solutionstring .= "\\Delta, \\{ $autom[5] \\},"; }
+   $solutionstring .= "\\{ $autom[6] \\}) \\] </m>";
+   $solutionstring .= "mit den Übergängen: ";
+   $solutionstring .= $autom[8];
+
+    return $solutionstring;
+}
+
+sub samplesolution{
+    my $jffstring = shift;
+    my $svgstring = shift;
+    
+    my $solutionstring = "<p/> <b>Mögliche Lösung: </b> ";
+   $solutionstring .= autostring($jffstring);
+   $solutionstring .= "und dem Zustandsdiagramm: ";
+   $solutionstring .= "<p/>" . $svgstring;
+
+   return $solutionstring;
+}
+
+sub comparejffs{
+    my $jffgiven = shift;
+    my $jffstud = shift;
+    my @autogiven = readautomaton($jffgiven);
+    my @autostud  = readautomaton($jffstud);
+    my $result = 0;
+
+    if ($autogiven[0] eq $autostud[0]) { $result++;}  
+    if ( $autogiven[7] eq $autostud[7]) { $result++;}
+
+    for (my $i=1; $i < 7; $i++){
+        my $currentgiven = &main::cas('maxima',"set($autogiven[$i]);");
+        my $currentstud  = &main::cas('maxima',"set($autostud[$i]);");
+        my  $sub_program = "is($currentgiven=$currentstud);";
+        my $answer =&main::cas('maxima',$sub_program);
+        if($answer eq "true"){ $result++;}
+    }
+    if ($result < 8) { return 'INCORRECT'; }
+      else { return 'EXACT_ANS';}
+}
+
+
+# a module should return a true value
+1;
+</script>
+</library>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

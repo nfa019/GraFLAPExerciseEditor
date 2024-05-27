@@ -1,0 +1,442 @@
+<library>
+<import importmode="" id="NumCon">/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries/Machine_Functions/NumberConverter.library</import>
+<script type="loncapa/perl">
+package TuringBinaryUnaryConversion;
+#use strict;
+#use warnings;
+
+sub generate_test_words {
+  my $number_of_words = shift;
+  my $coding = shift;
+  my %word_pairs;
+
+  $word_pairs{'0'} = '';
+  $word_pairs{'0001101'} = "$coding$coding$coding$coding$coding$coding$coding$coding$coding$coding$coding$coding$coding";
+  while (scalar keys %word_pairs < $number_of_words) {
+    my $number = &main::random(1,$number_of_words,1);
+    my $binary = NumberConverter::convert_decimal_to_binary($number);
+    my $unary = NumberConverter::convert_decimal_to_unary($number, $coding);
+    $word_pairs{$binary} = $unary;
+  }
+
+  my @keys = keys %word_pairs;
+  my $input;
+  for my $i ( 0 .. scalar @keys - 2 ) {
+    $input .= $keys[$i] . ';' . $word_pairs{$keys[$i]} . '%';
+  }
+  $input .= $keys[scalar @keys - 1] . ';';
+  $input .= $word_pairs{$keys[scalar @keys - 1]};
+
+  return $input;
+}
+
+sub get_automaton_solution_svg {
+  my $coding = shift;
+  my $replacer = shift;
+  return "      <imagesvg>
+        <svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"1080pt\" height=\"336pt\" viewBox=\"0.00 0.00 1080.00 336.13\">
+          <g id=\"graph0\" class=\"graph\" transform=\"scale(0.653766 0.653766) rotate(0) translate(4 510.146)\">
+            <title>automaton</title>
+            <polygon fill=\"white\" stroke=\"none\" points=\"-4,4 -4,-510.146 1647.97,-510.146 1647.97,4 -4,4\" />
+            <!-- start -->
+            <g id=\"node1\" class=\"node\">
+              <title>start</title>
+            </g>
+            <!-- 0 -->
+            <g id=\"node2\" class=\"node\">
+              <title>0</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"161.798\" cy=\"-156.348\" rx=\"20.5982\" ry=\"20.5982\" />
+              <text text-anchor=\"middle\" x=\"161.798\" y=\"-152.648\" font-family=\"Times,serif\" font-size=\"14.00\">st</text>
+            </g>
+            <!-- start&#45;&gt;0 -->
+            <g id=\"edge1\" class=\"edge\">
+              <title>start-&gt;0</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M54.2366,-156.348C76.1621,-156.348 107.446,-156.348 130.448,-156.348\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"130.683,-159.848 140.683,-156.348 130.683,-152.848 130.683,-159.848\" />
+            </g>
+            <!-- 0&#45;&gt;0 -->
+            <g id=\"edge2\" class=\"edge\">
+              <title>0-&gt;0</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M150.97,-174.378C147.689,-186.858 151.298,-199.146 161.798,-199.146 169.427,-199.146 173.418,-192.659 173.772,-184.325\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"177.248,-183.912 172.626,-174.378 170.294,-184.713 177.248,-183.912\" />
+              <text text-anchor=\"middle\" x=\"161.798\" y=\"-202.946\" font-family=\"Times,serif\" font-size=\"14.00\">0 : □, R</text>
+            </g>
+            <!-- 1 -->
+            <g id=\"node3\" class=\"node\">
+              <title>1</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"339.596\" cy=\"-218.348\" rx=\"20.5982\" ry=\"20.5982\" />
+              <text text-anchor=\"middle\" x=\"339.596\" y=\"-214.648\" font-family=\"Times,serif\" font-size=\"14.00\">sr</text>
+            </g>
+            <!-- 0&#45;&gt;1 -->
+            <g id=\"edge3\" class=\"edge\">
+              <title>0-&gt;1</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M181.612,-162.983C212.459,-173.862 273.973,-195.556 310.163,-208.32\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"309.058,-211.641 319.652,-211.667 311.386,-205.04 309.058,-211.641\" />
+              <text text-anchor=\"middle\" x=\"249.096\" y=\"-198.148\" font-family=\"Times,serif\" font-size=\"14.00\">1 : 1, S</text>
+            </g>
+            <!-- 18 -->
+            <g id=\"node18\" class=\"node\">
+              <title>18</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"523.944\" cy=\"-137.348\" rx=\"20.6302\" ry=\"20.6302\" />
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"523.944\" cy=\"-137.348\" rx=\"24.5979\" ry=\"24.5979\" />
+              <text text-anchor=\"middle\" x=\"523.944\" y=\"-133.648\" font-family=\"Times,serif\" font-size=\"14.00\">sf</text>
+            </g>
+            <!-- 0&#45;&gt;18 -->
+            <g id=\"edge4\" class=\"edge\">
+              <title>0-&gt;18</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M182.674,-155.299C241.424,-152.2 414.776,-143.054 488.804,-139.149\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"489.179,-142.634 498.98,-138.612 488.81,-135.644 489.179,-142.634\" />
+              <text text-anchor=\"middle\" x=\"339.596\" y=\"-151.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, S</text>
+            </g>
+            <!-- 2 -->
+            <g id=\"node4\" class=\"node\">
+              <title>2</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"523.944\" cy=\"-348.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"523.944\" y=\"-344.648\" font-family=\"Times,serif\" font-size=\"14.00\">s01</text>
+            </g>
+            <!-- 1&#45;&gt;2 -->
+            <g id=\"edge5\" class=\"edge\">
+              <title>1-&gt;2</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M357.1,-230.114C388.235,-252.31 455.97,-300.6 494.55,-328.105\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"492.601,-331.014 502.775,-333.969 496.665,-325.314 492.601,-331.014\" />
+              <text text-anchor=\"middle\" x=\"431.096\" y=\"-302.148\" font-family=\"Times,serif\" font-size=\"14.00\">0 : □, R</text>
+            </g>
+            <!-- 3 -->
+            <g id=\"node5\" class=\"node\">
+              <title>3</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"523.944\" cy=\"-209.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"523.944\" y=\"-205.648\" font-family=\"Times,serif\" font-size=\"14.00\">s11</text>
+            </g>
+            <!-- 1&#45;&gt;3 -->
+            <g id=\"edge6\" class=\"edge\">
+              <title>1-&gt;3</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M360.458,-217.367C391.17,-215.852 450.583,-212.919 488.425,-211.051\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"488.67,-214.544 498.485,-210.555 488.325,-207.552 488.67,-214.544\" />
+              <text text-anchor=\"middle\" x=\"431.096\" y=\"-218.148\" font-family=\"Times,serif\" font-size=\"14.00\">1 : □, R</text>
+            </g>
+            <!-- 1&#45;&gt;18 -->
+            <g id=\"edge7\" class=\"edge\">
+              <title>1-&gt;18</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M359.084,-210.135C390.17,-196.327 453.243,-168.309 491.429,-151.347\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"493.311,-154.341 501.029,-147.082 490.47,-147.943 493.311,-154.341\" />
+              <text text-anchor=\"middle\" x=\"431.096\" y=\"-191.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, R</text>
+            </g>
+            <!-- 2&#45;&gt;2 -->
+            <g id=\"edge8\" class=\"edge\">
+              <title>2-&gt;2</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M515.574,-372.709C514.416,-384.858 517.206,-395.696 523.944,-395.696 528.682,-395.696 531.468,-390.338 532.302,-382.933\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"535.802,-382.713 532.314,-372.709 528.802,-382.705 535.802,-382.713\" />
+              <text text-anchor=\"middle\" x=\"523.944\" y=\"-399.496\" font-family=\"Times,serif\" font-size=\"14.00\">0 : 0, R</text>
+            </g>
+            <!-- 2&#45;&gt;2 -->
+            <g id=\"edge9\" class=\"edge\">
+              <title>2-&gt;2</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M510.612,-370.004C502.519,-392.496 506.964,-417.696 523.944,-417.696 538.47,-417.696 543.822,-399.254 540,-379.842\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"543.317,-378.708 537.276,-370.004 536.571,-380.576 543.317,-378.708\" />
+              <text text-anchor=\"middle\" x=\"523.944\" y=\"-421.496\" font-family=\"Times,serif\" font-size=\"14.00\">1 : 1, R</text>
+            </g>
+            <!-- 4 -->
+            <g id=\"node6\" class=\"node\">
+              <title>4</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"709.64\" cy=\"-348.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"709.64\" y=\"-344.648\" font-family=\"Times,serif\" font-size=\"14.00\">s02</text>
+            </g>
+            <!-- 2&#45;&gt;4 -->
+            <g id=\"edge10\" class=\"edge\">
+              <title>2-&gt;4</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M549.337,-348.348C581.315,-348.348 637.605,-348.348 673.994,-348.348\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"674.145,-351.848 684.145,-348.348 674.145,-344.848 674.145,-351.848\" />
+              <text text-anchor=\"middle\" x=\"616.792\" y=\"-352.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, R</text>
+            </g>
+            <!-- 3&#45;&gt;3 -->
+            <g id=\"edge11\" class=\"edge\">
+              <title>3-&gt;3</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M515.574,-233.709C514.416,-245.858 517.206,-256.696 523.944,-256.696 528.682,-256.696 531.468,-251.338 532.302,-243.933\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"535.802,-243.713 532.314,-233.709 528.802,-243.705 535.802,-243.713\" />
+              <text text-anchor=\"middle\" x=\"523.944\" y=\"-260.496\" font-family=\"Times,serif\" font-size=\"14.00\">0 : 0, R</text>
+            </g>
+            <!-- 3&#45;&gt;3 -->
+            <g id=\"edge12\" class=\"edge\">
+              <title>3-&gt;3</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M510.612,-231.004C502.519,-253.496 506.964,-278.696 523.944,-278.696 538.47,-278.696 543.822,-260.254 540,-240.842\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"543.317,-239.708 537.276,-231.004 536.571,-241.576 543.317,-239.708\" />
+              <text text-anchor=\"middle\" x=\"523.944\" y=\"-282.496\" font-family=\"Times,serif\" font-size=\"14.00\">1 : 1, R</text>
+            </g>
+            <!-- 5 -->
+            <g id=\"node7\" class=\"node\">
+              <title>5</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"709.64\" cy=\"-191.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"709.64\" y=\"-187.648\" font-family=\"Times,serif\" font-size=\"14.00\">s12</text>
+            </g>
+            <!-- 3&#45;&gt;5 -->
+            <g id=\"edge13\" class=\"edge\">
+              <title>3-&gt;5</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M549.337,-206.957C581.315,-203.824 637.605,-198.308 673.994,-194.743\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"674.534,-198.207 684.145,-193.748 673.852,-191.24 674.534,-198.207\" />
+              <text text-anchor=\"middle\" x=\"616.792\" y=\"-206.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, R</text>
+            </g>
+            <!-- 6 -->
+            <g id=\"node8\" class=\"node\">
+              <title>6</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"891.335\" cy=\"-283.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"891.335\" y=\"-279.648\" font-family=\"Times,serif\" font-size=\"14.00\">s03</text>
+            </g>
+            <!-- 4&#45;&gt;6 -->
+            <g id=\"edge14\" class=\"edge\">
+              <title>4-&gt;6</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M733.764,-339.983C765.302,-328.575 821.97,-308.077 857.788,-295.121\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"859.087,-298.373 867.3,-291.68 856.705,-291.79 859.087,-298.373\" />
+              <text text-anchor=\"middle\" x=\"800.487\" y=\"-327.148\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $replacer, R</text>
+            </g>
+            <!-- 7 -->
+            <g id=\"node9\" class=\"node\">
+              <title>7</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"891.335\" cy=\"-42.3478\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"891.335\" y=\"-38.6478\" font-family=\"Times,serif\" font-size=\"14.00\">s13</text>
+            </g>
+            <!-- 5&#45;&gt;7 -->
+            <g id=\"edge15\" class=\"edge\">
+              <title>5-&gt;7</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M729.79,-175.405C743.263,-164.194 761.72,-148.844 777.987,-135.348 807.145,-111.157 840.598,-83.4747 863.364,-64.6456\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"865.765,-67.2021 871.241,-58.132 861.304,-61.8077 865.765,-67.2021\" />
+              <text text-anchor=\"middle\" x=\"800.487\" y=\"-139.148\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $replacer, R</text>
+            </g>
+            <!-- 16 -->
+            <g id=\"node16\" class=\"node\">
+              <title>16</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"1444.87\" cy=\"-247.348\" rx=\"20.5982\" ry=\"20.5982\" />
+              <text text-anchor=\"middle\" x=\"1444.87\" y=\"-243.648\" font-family=\"Times,serif\" font-size=\"14.00\">sc</text>
+            </g>
+            <!-- 5&#45;&gt;16 -->
+            <g id=\"edge16\" class=\"edge\">
+              <title>5-&gt;16</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M734.236,-198.291C768.359,-207.703 833.614,-223.348 890.335,-223.348 890.335,-223.348 890.335,-223.348 1265.73,-223.348 1318.47,-223.348 1379.22,-233.809 1414.42,-240.918\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1413.98,-244.402 1424.48,-243.002 1415.4,-237.547 1413.98,-244.402\" />
+              <text text-anchor=\"middle\" x=\"1079.03\" y=\"-227.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : $coding, L</text>
+            </g>
+            <!-- 6&#45;&gt;6 -->
+            <g id=\"edge17\" class=\"edge\">
+              <title>6-&gt;6</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M883.147,-307.709C882.014,-319.858 884.743,-330.696 891.335,-330.696 895.97,-330.696 898.695,-325.338 899.511,-317.933\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"903.011,-317.713 899.523,-307.709 896.011,-317.705 903.011,-317.713\" />
+              <text text-anchor=\"middle\" x=\"891.335\" y=\"-334.496\" font-family=\"Times,serif\" font-size=\"14.00\">$replacer : $replacer, R</text>
+            </g>
+            <!-- 6&#45;&gt;6 -->
+            <g id=\"edge18\" class=\"edge\">
+              <title>6-&gt;6</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M878.168,-305.362C870.423,-327.762 874.812,-352.696 891.335,-352.696 905.47,-352.696 910.725,-334.449 907.1,-315.15\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"910.45,-314.129 904.502,-305.362 903.685,-315.925 910.45,-314.129\" />
+              <text text-anchor=\"middle\" x=\"891.335\" y=\"-356.496\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $coding, R</text>
+            </g>
+            <!-- 10 -->
+            <g id=\"node10\" class=\"node\">
+              <title>10</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"1079.03\" cy=\"-285.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"1079.03\" y=\"-281.648\" font-family=\"Times,serif\" font-size=\"14.00\">s04</text>
+            </g>
+            <!-- 6&#45;&gt;10 -->
+            <g id=\"edge19\" class=\"edge\">
+              <title>6-&gt;10</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M916.994,-283.613C949.41,-283.962 1006.54,-284.578 1043.31,-284.974\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1043.53,-288.476 1053.57,-285.084 1043.6,-281.477 1043.53,-288.476\" />
+              <text text-anchor=\"middle\" x=\"985.183\" y=\"-288.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : $replacer, L</text>
+            </g>
+            <!-- 7&#45;&gt;7 -->
+            <g id=\"edge20\" class=\"edge\">
+              <title>7-&gt;7</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M883.147,-66.7091C882.014,-78.8585 884.743,-89.6955 891.335,-89.6955 895.97,-89.6955 898.695,-84.3378 899.511,-76.9334\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"903.011,-76.7133 899.523,-66.7091 896.011,-76.7049 903.011,-76.7133\" />
+              <text text-anchor=\"middle\" x=\"891.335\" y=\"-93.4955\" font-family=\"Times,serif\" font-size=\"14.00\">$replacer : $replacer, R</text>
+            </g>
+            <!-- 7&#45;&gt;7 -->
+            <g id=\"edge21\" class=\"edge\">
+              <title>7-&gt;7</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M878.168,-64.3615C870.423,-86.7624 874.812,-111.696 891.335,-111.696 905.47,-111.696 910.725,-93.4488 907.1,-74.1501\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"910.45,-73.1291 904.502,-64.3615 903.685,-74.9247 910.45,-73.1291\" />
+              <text text-anchor=\"middle\" x=\"891.335\" y=\"-115.496\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $coding, R</text>
+            </g>
+            <!-- 11 -->
+            <g id=\"node11\" class=\"node\">
+              <title>11</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"1079.03\" cy=\"-42.3478\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"1079.03\" y=\"-38.6478\" font-family=\"Times,serif\" font-size=\"14.00\">s14</text>
+            </g>
+            <!-- 7&#45;&gt;11 -->
+            <g id=\"edge22\" class=\"edge\">
+              <title>7-&gt;11</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M916.994,-42.3478C949.41,-42.3478 1006.54,-42.3478 1043.31,-42.3478\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1043.57,-45.8478 1053.57,-42.3478 1043.57,-38.8478 1043.57,-45.8478\" />
+              <text text-anchor=\"middle\" x=\"985.183\" y=\"-46.1478\" font-family=\"Times,serif\" font-size=\"14.00\">□ : $replacer, L</text>
+            </g>
+            <!-- 10&#45;&gt;10 -->
+            <g id=\"edge23\" class=\"edge\">
+              <title>10-&gt;10</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1063.3,-305.788C1058.87,-319.423 1064.12,-332.696 1079.03,-332.696 1090.22,-332.696 1095.96,-325.23 1096.27,-315.745\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1099.72,-315.151 1094.76,-305.788 1092.8,-316.199 1099.72,-315.151\" />
+              <text text-anchor=\"middle\" x=\"1079.03\" y=\"-336.496\" font-family=\"Times,serif\" font-size=\"14.00\">$replacer : $replacer, L</text>
+            </g>
+            <!-- 12 -->
+            <g id=\"node12\" class=\"node\">
+              <title>12</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"1264.73\" cy=\"-388.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"1264.73\" y=\"-384.648\" font-family=\"Times,serif\" font-size=\"14.00\">s05</text>
+            </g>
+            <!-- 10&#45;&gt;12 -->
+            <g id=\"edge24\" class=\"edge\">
+              <title>10-&gt;12</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1101.46,-297.365C1134.01,-315.612 1196.03,-350.387 1233.25,-371.26\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1231.71,-374.41 1242.15,-376.248 1235.14,-368.304 1231.71,-374.41\" />
+              <text text-anchor=\"middle\" x=\"1171.88\" y=\"-352.148\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $coding, L</text>
+            </g>
+            <!-- 14 -->
+            <g id=\"node14\" class=\"node\">
+              <title>14</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"1264.73\" cy=\"-282.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"1264.73\" y=\"-278.648\" font-family=\"Times,serif\" font-size=\"14.00\">s06</text>
+            </g>
+            <!-- 10&#45;&gt;14 -->
+            <g id=\"edge25\" class=\"edge\">
+              <title>10-&gt;14</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1104.42,-284.949C1136.4,-284.427 1192.69,-283.508 1229.08,-282.914\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1229.29,-286.411 1239.23,-282.748 1229.18,-279.412 1229.29,-286.411\" />
+              <text text-anchor=\"middle\" x=\"1171.88\" y=\"-287.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, R</text>
+            </g>
+            <!-- 11&#45;&gt;11 -->
+            <g id=\"edge26\" class=\"edge\">
+              <title>11-&gt;11</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1063.3,-62.7881C1058.87,-76.4233 1064.12,-89.6955 1079.03,-89.6955 1090.22,-89.6955 1095.96,-82.2299 1096.27,-72.7447\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1099.72,-72.1515 1094.76,-62.7881 1092.8,-73.1994 1099.72,-72.1515\" />
+              <text text-anchor=\"middle\" x=\"1079.03\" y=\"-93.4955\" font-family=\"Times,serif\" font-size=\"14.00\">$replacer : $replacer, L</text>
+            </g>
+            <!-- 13 -->
+            <g id=\"node13\" class=\"node\">
+              <title>13</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"1264.73\" cy=\"-131.348\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"1264.73\" y=\"-127.648\" font-family=\"Times,serif\" font-size=\"14.00\">s15</text>
+            </g>
+            <!-- 11&#45;&gt;13 -->
+            <g id=\"edge27\" class=\"edge\">
+              <title>11-&gt;13</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1102.19,-53.0832C1134.6,-68.7862 1195.1,-98.0969 1232.15,-116.051\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1230.96,-119.364 1241.49,-120.574 1234.02,-113.064 1230.96,-119.364\" />
+              <text text-anchor=\"middle\" x=\"1171.88\" y=\"-101.148\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $coding, L</text>
+            </g>
+            <!-- 15 -->
+            <g id=\"node15\" class=\"node\">
+              <title>15</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"1264.73\" cy=\"-25.3478\" rx=\"25.1964\" ry=\"25.1964\" />
+              <text text-anchor=\"middle\" x=\"1264.73\" y=\"-21.6478\" font-family=\"Times,serif\" font-size=\"14.00\">s16</text>
+            </g>
+            <!-- 11&#45;&gt;15 -->
+            <g id=\"edge28\" class=\"edge\">
+              <title>11-&gt;15</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1104.42,-40.0903C1136.4,-37.1309 1192.69,-31.9216 1229.08,-28.554\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1229.6,-32.0213 1239.23,-27.6146 1228.95,-25.051 1229.6,-32.0213\" />
+              <text text-anchor=\"middle\" x=\"1171.88\" y=\"-39.1478\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, R</text>
+            </g>
+            <!-- 12&#45;&gt;4 -->
+            <g id=\"edge29\" class=\"edge\">
+              <title>12-&gt;4</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1239.39,-390.067C1177.03,-394.062 1006.52,-402.39 865.987,-385.348 823.209,-380.16 775.11,-367.632 743.921,-358.59\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"744.606,-355.143 734.025,-355.673 742.627,-361.858 744.606,-355.143\" />
+              <text text-anchor=\"middle\" x=\"985.183\" y=\"-398.148\" font-family=\"Times,serif\" font-size=\"14.00\">$replacer : $replacer, R</text>
+            </g>
+            <!-- 12&#45;&gt;12 -->
+            <g id=\"edge30\" class=\"edge\">
+              <title>12-&gt;12</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1249,-408.788C1244.57,-422.423 1249.81,-435.696 1264.73,-435.696 1275.91,-435.696 1281.66,-428.23 1281.96,-418.745\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1285.41,-418.151 1280.46,-408.788 1278.49,-419.199 1285.41,-418.151\" />
+              <text text-anchor=\"middle\" x=\"1264.73\" y=\"-439.496\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $coding, L</text>
+            </g>
+            <!-- 13&#45;&gt;5 -->
+            <g id=\"edge31\" class=\"edge\">
+              <title>13-&gt;5</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1239.22,-134.007C1150.83,-143.595 848.266,-176.418 745.284,-187.589\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"744.683,-184.134 735.119,-188.692 745.438,-191.093 744.683,-184.134\" />
+              <text text-anchor=\"middle\" x=\"985.183\" y=\"-167.148\" font-family=\"Times,serif\" font-size=\"14.00\">$replacer : $replacer, R</text>
+            </g>
+            <!-- 13&#45;&gt;13 -->
+            <g id=\"edge32\" class=\"edge\">
+              <title>13-&gt;13</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1249,-151.788C1244.57,-165.423 1249.81,-178.696 1264.73,-178.696 1275.91,-178.696 1281.66,-171.23 1281.96,-161.745\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1285.41,-161.151 1280.46,-151.788 1278.49,-162.199 1285.41,-161.151\" />
+              <text text-anchor=\"middle\" x=\"1264.73\" y=\"-182.496\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $coding, L</text>
+            </g>
+            <!-- 14&#45;&gt;14 -->
+            <g id=\"edge33\" class=\"edge\">
+              <title>14-&gt;14</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1249,-302.788C1244.57,-316.423 1249.81,-329.696 1264.73,-329.696 1275.91,-329.696 1281.66,-322.23 1281.96,-312.745\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1285.41,-312.151 1280.46,-302.788 1278.49,-313.199 1285.41,-312.151\" />
+              <text text-anchor=\"middle\" x=\"1264.73\" y=\"-333.496\" font-family=\"Times,serif\" font-size=\"14.00\">$replacer : $coding, R</text>
+            </g>
+            <!-- 14&#45;&gt;16 -->
+            <g id=\"edge34\" class=\"edge\">
+              <title>14-&gt;16</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1289.75,-277.627C1322.03,-271.286 1379.36,-260.023 1414.26,-253.165\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1415.19,-256.551 1424.32,-251.189 1413.84,-249.682 1415.19,-256.551\" />
+              <text text-anchor=\"middle\" x=\"1357.07\" y=\"-272.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, L</text>
+            </g>
+            <!-- 15&#45;&gt;15 -->
+            <g id=\"edge35\" class=\"edge\">
+              <title>15-&gt;15</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1249,-45.7881C1244.57,-59.4233 1249.81,-72.6955 1264.73,-72.6955 1275.91,-72.6955 1281.66,-65.2299 1281.96,-55.7447\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1285.41,-55.1515 1280.46,-45.7881 1278.49,-56.1994 1285.41,-55.1515\" />
+              <text text-anchor=\"middle\" x=\"1264.73\" y=\"-76.4955\" font-family=\"Times,serif\" font-size=\"14.00\">$replacer : $coding, R</text>
+            </g>
+            <!-- 15&#45;&gt;16 -->
+            <g id=\"edge36\" class=\"edge\">
+              <title>15-&gt;16</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1281.22,-44.6604C1313.83,-85.2929 1389.43,-179.501 1424.88,-223.679\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1422.22,-225.961 1431.21,-231.57 1427.68,-221.58 1422.22,-225.961\" />
+              <text text-anchor=\"middle\" x=\"1357.07\" y=\"-172.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : $coding, L</text>
+            </g>
+            <!-- 16&#45;&gt;16 -->
+            <g id=\"edge37\" class=\"edge\">
+              <title>16-&gt;16</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1431.21,-263.15C1425.37,-276.352 1429.92,-290.146 1444.87,-290.146 1456.08,-290.146 1461.45,-282.387 1460.97,-272.938\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1464.34,-272.012 1458.54,-263.15 1457.55,-273.699 1464.34,-272.012\" />
+              <text text-anchor=\"middle\" x=\"1444.87\" y=\"-293.946\" font-family=\"Times,serif\" font-size=\"14.00\">$coding : $coding, L</text>
+            </g>
+            <!-- 17 -->
+            <g id=\"node17\" class=\"node\">
+              <title>17</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"1620.47\" cy=\"-419.348\" rx=\"20.5982\" ry=\"20.5982\" />
+              <text text-anchor=\"middle\" x=\"1620.47\" y=\"-415.648\" font-family=\"Times,serif\" font-size=\"14.00\">sb</text>
+            </g>
+            <!-- 16&#45;&gt;17 -->
+            <g id=\"edge38\" class=\"edge\">
+              <title>16-&gt;17</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1460.37,-261.717C1490.83,-291.892 1561.59,-362.004 1597.59,-397.672\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1595.56,-400.589 1605.13,-405.141 1600.49,-395.616 1595.56,-400.589\" />
+              <text text-anchor=\"middle\" x=\"1532.67\" y=\"-357.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, L</text>
+            </g>
+            <!-- 17&#45;&gt;1 -->
+            <g id=\"edge39\" class=\"edge\">
+              <title>17-&gt;1</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1602.43,-429.696C1572.1,-447.099 1506.25,-480.348 1445.87,-480.348 522.944,-480.348 522.944,-480.348 522.944,-480.348 411.194,-480.348 362.354,-317.789 346.653,-248.763\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"350.053,-247.925 344.493,-238.906 343.215,-249.424 350.053,-247.925\" />
+              <text text-anchor=\"middle\" x=\"985.183\" y=\"-484.148\" font-family=\"Times,serif\" font-size=\"14.00\">□ : □, R</text>
+            </g>
+            <!-- 17&#45;&gt;17 -->
+            <g id=\"edge40\" class=\"edge\">
+              <title>17-&gt;17</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1612.91,-439.159C1611.23,-451.001 1613.75,-462.146 1620.47,-462.146 1625.19,-462.146 1627.84,-456.636 1628.41,-449.248\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1631.91,-449.018 1628.03,-439.159 1624.91,-449.285 1631.91,-449.018\" />
+              <text text-anchor=\"middle\" x=\"1620.47\" y=\"-465.946\" font-family=\"Times,serif\" font-size=\"14.00\">0 : 0, L</text>
+            </g>
+            <!-- 17&#45;&gt;17 -->
+            <g id=\"edge41\" class=\"edge\">
+              <title>17-&gt;17</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M1609.03,-436.93C1600.11,-458.565 1603.92,-484.146 1620.47,-484.146 1634.62,-484.146 1639.46,-465.425 1634.98,-446.469\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"1638.3,-445.378 1631.91,-436.93 1631.64,-447.522 1638.3,-445.378\" />
+              <text text-anchor=\"middle\" x=\"1620.47\" y=\"-487.946\" font-family=\"Times,serif\" font-size=\"14.00\">1 : 1, L</text>
+            </g>
+          </g>
+        </svg>
+       </imagesvg>";
+}
+
+1;
+</script>
+</library>
+

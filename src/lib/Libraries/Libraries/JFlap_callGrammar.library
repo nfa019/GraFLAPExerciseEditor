@@ -1,0 +1,33 @@
+<library>
+
+<startouttext />
+<hr />
+<p />
+<translated>
+<lang which="de">
+Geben Sie im untenstehenden Textfeld Ihre Grammatik folgendermaßen ein:
+ <p />
+Die Regeln werden durch ein Komma (,) getrennt, linke und rechte Seite einer Regel werden durch -> getrennt, mehrere rechte Seiten werden durch | getrennt, das Startsymbol muss S heißen, das leere Wort ist E, Variable (Nichtterminale) sind Großbuchstaben, Terminale sind Kleinbuchstaben (oder Ziffern, wenn verlangt). Eine Grammatik könnte also z.B. so aussehen:
+ <p />
+S -> E, S -> A|aBa, aBa -> abba, A -> b|E
+ <p />
+
+</lang>
+<lang which="en">Please input your grammar in the following way:
+<p />
+The rules are separated by a comma (,), left- and right-hand side of a rule are separated by ->, more than one right-hand sides are separated by |, the start symbol has to be S, the empty word ist E, variables (non-terminal symbols) are the upper case letters, terminal symbols are lower case letters (or number if applicable). A grammar can e.g. look like follows:
+ <p />
+S -> E, S -> A|aBa, aBa -> abba, A -> b|E
+ </lang>
+<lang which="default">Please input your grammar in the following way:
+<p />
+The rules are separated by a comma (,), left- and right-hand side of a rule are separated by ->, more than one right-hand sides are separated by |, the start symbol has to be S, the empty word ist E, variables (non-terminal symbols) are the upper case letters, terminal symbols are lower case letters (or number if applicable). A grammar can e.g. look like follows:
+ <p />
+S -> E, S -> A|aBa, aBa -> abba, A -> b|E
+ </lang>
+</translated>
+<p />
+
+<endouttext />
+</library>
+

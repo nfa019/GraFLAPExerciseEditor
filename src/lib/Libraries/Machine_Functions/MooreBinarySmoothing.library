@@ -1,0 +1,248 @@
+<library>
+<import id="NumCon" importmode="">/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries/Machine_Functions/NumberConverter.library</import>
+<script type="loncapa/perl">
+package MealyBinarySmoothing;
+#use strict;
+#use warnings;
+
+sub generate_test_word_string {
+  my $number_of_words = shift;
+  my $word_string = '01%10%001%010%011%1010010%00101101';
+  my $i = 7;
+
+  while ($i < $number_of_words) {
+    my $number = &main::random(1,255,1);
+    my $binary = NumberConverter::convert_decimal_to_binary($number);
+    my $padding = '';
+    for my $j (length($binary) + 1 .. 8) {
+      $padding .= 0;
+    }
+    $word_string .= '%' . $padding . $binary;
+    $i++;
+  }
+
+  return $word_string;
+}
+
+sub get_automaton_solution_string {
+  return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><!--Created with JFLAP 6.4.--><structure>
+  <type>moore</type>
+  <automaton>
+    <!--The list of states.-->
+    <state id=\"0\" name=\"q0\">
+      <x>141.0</x>
+      <y>120.0</y>
+      <initial/>
+      <output/>
+    </state>
+    <state id=\"1\" name=\"q1\">
+      <x>224.0</x>
+      <y>205.0</y>
+      <output>0</output>
+    </state>
+    <state id=\"2\" name=\"q2\">
+      <x>22.0</x>
+      <y>202.0</y>
+      <output>0</output>
+    </state>
+    <state id=\"3\" name=\"q3\">
+      <x>27.0</x>
+      <y>33.0</y>
+      <output>1</output>
+    </state>
+    <state id=\"4\" name=\"q4\">
+      <x>284.0</x>
+      <y>43.0</y>
+      <output>1</output>
+    </state>
+    <!--The list of transitions.-->
+    <transition>
+      <from>1</from>
+      <to>1</to>
+      <read>0</read>
+      <transout>0</transout>
+    </transition>
+    <transition>
+      <from>3</from>
+      <to>3</to>
+      <read>1</read>
+      <transout>1</transout>
+    </transition>
+    <transition>
+      <from>2</from>
+      <to>3</to>
+      <read>1</read>
+      <transout>1</transout>
+    </transition>
+    <transition>
+      <from>0</from>
+      <to>3</to>
+      <read>1</read>
+      <transout>1</transout>
+    </transition>
+    <transition>
+      <from>3</from>
+      <to>4</to>
+      <read>0</read>
+      <transout>1</transout>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>3</to>
+      <read>1</read>
+      <transout>1</transout>
+    </transition>
+    <transition>
+      <from>4</from>
+      <to>1</to>
+      <read>0</read>
+      <transout>0</transout>
+    </transition>
+    <transition>
+      <from>2</from>
+      <to>1</to>
+      <read>0</read>
+      <transout>0</transout>
+    </transition>
+    <transition>
+      <from>0</from>
+      <to>1</to>
+      <read>0</read>
+      <transout>0</transout>
+    </transition>
+    <transition>
+      <from>1</from>
+      <to>2</to>
+      <read>1</read>
+      <transout>0</transout>
+    </transition>
+  </automaton>
+</structure>";
+}
+
+sub get_automaton_solution_svg {
+  return "<imagesvg>
+        <svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"890pt\" height=\"193pt\" viewBox=\"0.00 0.00 890.27 193.44\">
+          <g id=\"graph0\" class=\"graph\" transform=\"scale(1 1) rotate(0) translate(4 189.443)\">
+            <title>automaton</title>
+            <polygon fill=\"white\" stroke=\"none\" points=\"-4,4 -4,-189.443 886.268,-189.443 886.268,4 -4,4\" />
+            <!-- start -->
+            <g id=\"node1\" class=\"node\">
+              <title>start</title>
+            </g>
+            <!-- 0 -->
+            <g id=\"node2\" class=\"node\">
+              <title>0</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"178.047\" cy=\"-37.0467\" rx=\"37.0935\" ry=\"37.0935\" />
+              <text text-anchor=\"middle\" x=\"178.047\" y=\"-33.3467\" font-family=\"Times,serif\" font-size=\"14.00\">s0 / L</text>
+            </g>
+            <!-- start&#45;&gt;0 -->
+            <g id=\"edge1\" class=\"edge\">
+              <title>start-&gt;0</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M54.3035,-37.0467C75.4574,-37.0467 105.695,-37.0467 130.865,-37.0467\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"130.943,-40.5468 140.943,-37.0467 130.943,-33.5468 130.943,-40.5468\" />
+            </g>
+            <!-- 1 -->
+            <g id=\"node3\" class=\"node\">
+              <title>1</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"345.49\" cy=\"-112.047\" rx=\"36.2938\" ry=\"36.2938\" />
+              <text text-anchor=\"middle\" x=\"345.49\" y=\"-108.347\" font-family=\"Times,serif\" font-size=\"14.00\">s1 / 0</text>
+            </g>
+            <!-- 0&#45;&gt;1 -->
+            <g id=\"edge10\" class=\"edge\">
+              <title>0-&gt;1</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M212.129,-52.0438C238.223,-63.873 274.774,-80.4427 302.857,-93.1734\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"301.476,-96.39 312.029,-97.3312 304.366,-90.0145 301.476,-96.39\" />
+              <text text-anchor=\"middle\" x=\"262.093\" y=\"-78.8467\" font-family=\"Times,serif\" font-size=\"14.00\">0</text>
+            </g>
+            <!-- 3 -->
+            <g id=\"node5\" class=\"node\">
+              <title>3</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"679.077\" cy=\"-60.0467\" rx=\"36.2938\" ry=\"36.2938\" />
+              <text text-anchor=\"middle\" x=\"679.077\" y=\"-56.3467\" font-family=\"Times,serif\" font-size=\"14.00\">s3 / 1</text>
+            </g>
+            <!-- 0&#45;&gt;3 -->
+            <g id=\"edge5\" class=\"edge\">
+              <title>0-&gt;3</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M215.294,-36.9274C281.559,-36.9323 426.662,-37.9745 548.681,-46.0467 576.596,-47.8935 607.776,-51.2286 632.534,-54.1805\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"632.374,-57.6867 642.723,-55.4167 633.217,-50.7377 632.374,-57.6867\" />
+              <text text-anchor=\"middle\" x=\"428.887\" y=\"-44.8467\" font-family=\"Times,serif\" font-size=\"14.00\">1</text>
+            </g>
+            <!-- 1&#45;&gt;1 -->
+            <g id=\"edge2\" class=\"edge\">
+              <title>1-&gt;1</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M330.229,-145.359C329.272,-158.966 334.359,-170.443 345.49,-170.443 353.664,-170.443 358.579,-164.254 360.235,-155.576\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"363.742,-155.523 360.752,-145.359 356.751,-155.169 363.742,-155.523\" />
+              <text text-anchor=\"middle\" x=\"345.49\" y=\"-174.243\" font-family=\"Times,serif\" font-size=\"14.00\">0</text>
+            </g>
+            <!-- 2 -->
+            <g id=\"node4\" class=\"node\">
+              <title>2</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"512.284\" cy=\"-93.0467\" rx=\"36.2938\" ry=\"36.2938\" />
+              <text text-anchor=\"middle\" x=\"512.284\" y=\"-89.3467\" font-family=\"Times,serif\" font-size=\"14.00\">s2 / 0</text>
+            </g>
+            <!-- 1&#45;&gt;2 -->
+            <g id=\"edge11\" class=\"edge\">
+              <title>1-&gt;2</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M381.843,-107.971C406.389,-105.141 439.312,-101.345 465.811,-98.2895\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"466.457,-101.738 475.99,-97.1159 465.655,-94.7844 466.457,-101.738\" />
+              <text text-anchor=\"middle\" x=\"428.887\" y=\"-106.847\" font-family=\"Times,serif\" font-size=\"14.00\">1</text>
+            </g>
+            <!-- 2&#45;&gt;1 -->
+            <g id=\"edge9\" class=\"edge\">
+              <title>2-&gt;1</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M477.105,-82.503C461.177,-78.97 442.004,-76.6878 424.887,-80.0467 412.49,-82.4794 399.582,-86.8849 387.902,-91.6645\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"386.229,-88.5736 378.419,-95.7323 388.989,-95.0068 386.229,-88.5736\" />
+              <text text-anchor=\"middle\" x=\"428.887\" y=\"-83.8467\" font-family=\"Times,serif\" font-size=\"14.00\">0</text>
+            </g>
+            <!-- 2&#45;&gt;3 -->
+            <g id=\"edge4\" class=\"edge\">
+              <title>2-&gt;3</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M548.232,-86.0483C573.03,-81.0824 606.526,-74.3749 633.285,-69.0163\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"634.061,-72.4305 643.179,-67.0351 632.687,-65.5668 634.061,-72.4305\" />
+              <text text-anchor=\"middle\" x=\"595.681\" y=\"-80.8467\" font-family=\"Times,serif\" font-size=\"14.00\">1</text>
+            </g>
+            <!-- 3&#45;&gt;3 -->
+            <g id=\"edge3\" class=\"edge\">
+              <title>3-&gt;3</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M663.816,-93.3589C662.859,-106.966 667.946,-118.443 679.077,-118.443 687.252,-118.443 692.166,-112.254 693.822,-103.576\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"697.329,-103.523 694.339,-93.3589 690.338,-103.169 697.329,-103.523\" />
+              <text text-anchor=\"middle\" x=\"679.077\" y=\"-122.243\" font-family=\"Times,serif\" font-size=\"14.00\">1</text>
+            </g>
+            <!-- 4 -->
+            <g id=\"node6\" class=\"node\">
+              <title>4</title>
+              <ellipse fill=\"none\" stroke=\"black\" cx=\"845.871\" cy=\"-102.047\" rx=\"36.2938\" ry=\"36.2938\" />
+              <text text-anchor=\"middle\" x=\"845.871\" y=\"-98.3467\" font-family=\"Times,serif\" font-size=\"14.00\">s4 / 1</text>
+            </g>
+            <!-- 3&#45;&gt;4 -->
+            <g id=\"edge6\" class=\"edge\">
+              <title>3-&gt;4</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M714.623,-68.8513C739.563,-75.2074 773.452,-83.8446 800.411,-90.7154\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"799.816,-94.1755 810.37,-93.2537 801.544,-87.3924 799.816,-94.1755\" />
+              <text text-anchor=\"middle\" x=\"762.474\" y=\"-84.8467\" font-family=\"Times,serif\" font-size=\"14.00\">0</text>
+            </g>
+            <!-- 4&#45;&gt;1 -->
+            <g id=\"edge8\" class=\"edge\">
+              <title>4-&gt;1</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M811.671,-114.653C785.872,-123.745 748.962,-135.231 715.474,-140.047 610.075,-155.203 581.766,-151.371 475.887,-140.047 447.163,-136.974 415.454,-130.17 390.615,-124.038\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"391.317,-120.606 380.765,-121.554 389.605,-127.393 391.317,-120.606\" />
+              <text text-anchor=\"middle\" x=\"595.681\" y=\"-152.847\" font-family=\"Times,serif\" font-size=\"14.00\">0</text>
+            </g>
+            <!-- 4&#45;&gt;3 -->
+            <g id=\"edge7\" class=\"edge\">
+              <title>4-&gt;3</title>
+              <path fill=\"none\" stroke=\"black\" d=\"M814.94,-82.144C800.857,-73.9212 783.454,-65.323 766.474,-61.0467 753.504,-57.7802 739.088,-56.6678 725.807,-56.6053\" />
+              <polygon fill=\"black\" stroke=\"black\" points=\"725.395,-53.1109 715.448,-56.7591 725.499,-60.1102 725.395,-53.1109\" />
+              <text text-anchor=\"middle\" x=\"762.474\" y=\"-64.8467\" font-family=\"Times,serif\" font-size=\"14.00\">1</text>
+            </g>
+          </g>
+        </svg>
+      </imagesvg>";
+}
+
+1;
+</script>
+</library>
+
+

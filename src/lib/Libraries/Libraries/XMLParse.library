@@ -1,0 +1,103 @@
+<library>
+<script type="loncapa/perl">
+package XMLParse;
+
+sub find_elements_by_tag { # (document, tag)
+  my @document = @{$_[0]};
+  my $tag = $_[1];
+  return find_elements_by_tag_with_attribute(\@document, $tag)
+}
+
+sub find_elements_by_tag_with_attribute { # (document, tag, attribute)
+  my @document = @{$_[0]};
+  my $tag = $_[1];
+  my $attribute = $_[2];
+  if (!(defined $attribute)) { $attribute = ""; }
+  my $found_element = -1;
+  my @result;
+  my @queue;
+  my $temp_element = "";
+  my $attribute_regex = qr/( \w+="[\w\s]+")*\s?$attribute( \w+="[\w\s]+")*/;
+
+  foreach (@document) {
+   $row = trim($_);
+    if ($row =~ /<$tag$attribute_regex>\w+<\/$tag>/ && $found_element == -1) {
+      push @result, $row;
+    } elsif ($row =~ /<$tag$attribute_regex>/) {
+      $temp_element = $temp_element . $row . "\n";
+      $found_element++;
+    } elsif ($found_element > -1) {
+      if ($row =~ /<$tag$attribute_regex>/) {
+        $temp_element = $temp_element . $row . "\n";
+        $found_element++;
+      } elsif ($row =~ /<\/$tag>/) {
+        if ($found_element > 0) {
+          $temp_element = $temp_element . $row . "\n";
+          $found_element--;
+        } else {
+          $temp_element = $temp_element . $row;
+          my @temp_result = split("\n", $temp_element);
+          push @result, \@temp_result;
+          push @queue, \@temp_result;
+          $temp_element = "";
+          $found_element = -1;
+        }
+      } else {
+        $temp_element = $temp_element . $row . "\n";
+      }
+    }
+  }
+
+  foreach (@queue) {
+    my @next_item = @{$_};
+    my @truncated = @next_item[ 1 .. $#next_item - 1];
+    push @result, find_elements_by_tag_with_attribute(\@truncated, $tag);
+  }
+
+  return @result;
+}
+
+sub get_attribute_from_element { # (element, attribute)
+  my $element = @{$_[0]}[0];
+  my $attribute = $_[1];
+  if ($element =~ /$attribute="[\w\s]+"/) {
+  my @result = split("\"", substr($element, $-[0], $+[0] - $-[0]));
+    return @result[1];
+  }
+}
+
+sub get_content_of_element { # (element)
+    my @element = @{$_[0]};
+    if (scalar @element == 0) {
+      return '';
+    }
+    return get_content_of_element_with_attribute(\@element);
+}
+
+sub get_content_of_element_with_attribute { # (element, attribute)
+  my @element = @{$_[0]};
+  my $attribute = $_[1];
+  if (!(defined $attribute)) { $attribute = ""; }
+  if (scalar @element == 1) {
+    if (@element[0] =~ /( \w+="[\w\s]+")*\s?$attribute( \w+="[\w\s]+")*>\w+</) {
+      my $result = substr(@element[0], $-[0] + 1, $+[0] - $-[0] - 2);
+      return $result;
+    }
+  } else {
+    if (@element[0] =~ /\s?$attribute/) {
+      @element = @element[ 1 .. $#element - 1];
+      return @element;
+    }
+  }
+}
+
+sub trim { # (line)
+  my $s = shift;
+  $s =~ s/^\s+|\s+$//g;
+  return $s;
+}
+
+1;
+</script>
+</library>
+

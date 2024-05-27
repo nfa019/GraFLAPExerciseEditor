@@ -1,0 +1,92 @@
+<library>
+
+<startouttext />
+
+<translated>
+<lang which="de">Gesucht sind außerdem die Bestandteile des Automaten  in formal
+korrekter Form. Geben Sie nacheinander in die untenstehenden Textfelder ein:  </lang>
+<lang which="en">Please input now the components of the automaton  in formally correct notion into the text fields below. </lang>
+<lang which="default">Please input now the components of the automaton in formally correct notion into the text fields below.
+ </lang>
+</translated>
+<p /><endouttext />
+    <import importmode="" id="jffperllib">/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries/Automata.library</import>
+
+<script type="loncapa/perl">
+
+@auto=Automata::readautomaton($jff);
+$type = 0;
+if ($auto[0] eq "pda") { $type = 1; }
+$result1=&cas('maxima',"set($auto[1]);"); # States
+$result2=&cas('maxima',"set($auto[2]);"); # Alphabet
+$result3=&cas('maxima',"set($auto[3]);"); # Stack Alphabet
+$superset = &cas('maxima',"union(set($auto[2]),set($auto[3]));");
+$result5=&cas('maxima',"set($auto[5]);"); # initials
+$result6=&cas('maxima',"set($auto[6]);"); # finals
+if ($auto[7] eq "nd") { $det = 1; } else { $det = 0;}
+$tr = "Text";
+$transitionsTeX = $auto[8];
+
+$set4 = $auto[4];
+$set4 =~ s/\(/[/g;
+$set4 =~ s/\)/]/g;
+$result4=&cas('maxima',"set($set4);"); # Delta
+</script>
+<startouttext />
+<translated>
+<lang which="de">die Menge der Zustände </lang>
+<lang which="en">the set of states </lang>
+<lang which="default">the set of states </lang>
+</translated>
+ (states), 
+<endouttext />
+
+<startouttext />
+<translated>
+<lang which="de">das Eingabealphabet</lang>
+<lang which="en">the input alphabet </lang>
+<lang which="default">the input alphabet </lang>
+</translated>
+ (alphabet), 
+<endouttext />
+
+<script type="loncapa/perl">
+if ($type) {
+
+</script>
+
+
+<startouttext />
+<translated>
+<lang which="de">das Kelleralphabet (Benutzen Sie Z für das Keller-Bottomsymbol)</lang>
+<lang which="en">the stack alphabet (Please use Z for the bottom symbol)</lang>
+<lang which="default">the stack alphabet (Please use Z for the bottom symbol)</lang>
+</translated>
+ (stack alphabet), 
+
+<endouttext />
+
+<script type="loncapa/perl">
+}
+</script>
+
+<startouttext />
+<translated>
+<lang which="de">den Anfangszustand/die Anfangszustände</lang>
+<lang which="en">the inital state/s</lang>
+<lang which="default">the inital state/s</lang>
+</translated>
+ (initials), 
+
+<endouttext />
+<startouttext />
+<translated>
+<lang which="de">die Menge der Endzustände</lang>
+<lang which="en">the set of final states</lang>
+<lang which="default">the set of final states</lang>
+</translated>
+ (finals),
+
+<endouttext />
+
+</library>

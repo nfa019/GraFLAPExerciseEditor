@@ -1,0 +1,149 @@
+<library>
+<script type="loncapa/perl">
+package NumberConverter;
+#use strict;
+#use warnings;
+
+sub convert_decimal_to_binary { # (input)
+  my $input = shift;
+  return _convert_decimal_to($input, 2);
+}
+
+sub convert_binary_to_decimal { # (input)
+  my $input = shift;
+  return _convert_to_decimal_from($input, 2);
+}
+
+sub convert_decimal_to_octal { # (input)
+  my $input = shift;
+  return _convert_decimal_to($input, 8);
+}
+
+sub convert_octal_to_decimal { # (input)
+  my $input = shift;
+  return _convert_to_decimal_from($input, 8);
+}
+
+sub convert_decimal_to_hexadecimal { # (input)
+  my $input = shift;
+  my @stack = devide_input($input, 16);
+
+  my $result = '';
+  while (@stack) {
+    my $value = pop @stack;
+    if ( $value   < 10) {
+      $result .= $value;
+    } elsif ($value == 10) {
+      $result .= 'A';
+    } elsif ($value == 11) {
+      $result .= 'B';
+    } elsif ($value == 12) {
+      $result .= 'C';
+    } elsif ($value == 13) {
+      $result .= 'D';
+    } elsif ($value == 14) {
+      $result .= 'E';
+    } elsif ($value == 15) {
+      $result .= 'F';
+    }
+  }
+
+  return $result;
+}
+
+sub convert_hexadecimal_to_decimal { # (input)
+  my $input = shift;
+  my @char = split("", $input);
+
+  for my $i (0 .. scalar @char - 1) {
+    if ($char[$i] eq 'A') {
+      $char[$i] = 10;
+    } elsif ($char[$i] eq 'B') {
+      $char[$i] = 11;
+    } elsif ($char[$i] eq 'C') {
+      $char[$i] = 12;
+    } elsif ($char[$i] eq 'D') {
+      $char[$i] = 13;
+    } elsif ($char[$i] eq 'E') {
+      $char[$i] = 14;
+    } elsif ($char[$i] eq 'F') {
+      $char[$i] = 15;
+    } elsif ($char[$i] > 9 || $char[$i] < 0) {
+      die 'Error: invalid hexadecimal encoding.' . "\n";
+    }
+  }
+
+  return _calculate_result(16, \@char);
+}
+
+sub convert_decimal_to_unary { # (input, coding_character)
+  my $input = shift;
+  my $symbol = shift;
+  my $result = "";
+  if (!(defined $symbol)){ $symbol = '|'; }
+
+  for my $i (0 .. $input - 1) {
+    $result .= $symbol;
+  }
+
+ # if ($input <1 ) { $result = " " ; }
+  return $result;
+}
+
+sub convert_unary_to_decimal { # (input)
+  my $input = shift;
+  my @char = split("", $input);
+  return scalar @char;
+}
+
+sub devide_input { # (input, basis)
+  my $input = shift;
+  my $basis = shift;
+  my @stack;
+
+  while ($input >= $basis) {
+    push @stack, ($input % $basis);
+    $input /= $basis;
+  }
+  push @stack, ($input % $basis);
+
+  return @stack;
+}
+
+sub _convert_decimal_to { # (input, basis)
+  my $input = shift;
+  my $basis = shift;
+  my @stack = devide_input($input, $basis);
+
+  my $result = '';
+  while (@stack) {
+    $result .= pop @stack;
+  }
+
+  return $result;
+}
+
+sub _convert_to_decimal_from { # (input, basis)
+  my $input = shift;
+  my $basis = shift;
+  my @char = split("", $input);
+
+  return _calculate_result($basis, \@char);
+}
+
+sub _calculate_result { # (basis, splitted string)
+  my $basis = shift;
+  my @char = @{$_[0]};
+
+  my $result = 0;
+  for my $i (0 .. scalar @char - 1) {
+    my $index = scalar @char - 1 - $i;
+    $result += $basis**$i * $char[$index];
+  }
+
+  return $result;
+}
+
+1;
+</script>
+</library>
