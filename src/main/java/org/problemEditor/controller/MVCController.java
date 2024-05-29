@@ -1,15 +1,20 @@
 package org.problemEditor.controller;
 
 import org.problemEditor.GraFlapProblemEditor;
+import org.problemEditor.Main;
 import org.problemEditor.enums.PanelName;
 import org.problemEditor.util.MyFileHandler;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public abstract class MVCController {
     protected GraFlapProblemEditor graFlapProblemEditor;
@@ -21,22 +26,16 @@ public abstract class MVCController {
     protected File getDirectoryPath(String filePath) {
         String directory = new File(filePath).getParent();
         String proFormADir = directory + "/ProFormA";
-        Path sourceDir = Paths.get("src/lib/Libraries");
-        Path librariesDir = sourceDir.resolve(directory + "/Libraries");
+
+        // Path to the running JAR file
+        String jarFilePath = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String sourceDirectory = "Libraries";
         try {
-            Files.copy(sourceDir, librariesDir, StandardCopyOption.REPLACE_EXISTING);
-            Files.walk(sourceDir)
-                    .forEach(sourcePath -> {
-                        Path targetPath = librariesDir.resolve(sourceDir.relativize(sourcePath));
-                        try {
-                            Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            MyFileHandler.copyDirectoryFromJar(jarFilePath, sourceDirectory, directory + "/Libraries");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         File baseDirFile = new File(proFormADir);
         if (!baseDirFile.exists()) {
             try {

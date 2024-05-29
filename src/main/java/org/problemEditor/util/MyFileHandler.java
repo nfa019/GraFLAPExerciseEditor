@@ -2,21 +2,22 @@ package org.problemEditor.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.problemEditor.Main;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class MyFileHandler {
 
@@ -47,18 +48,13 @@ public class MyFileHandler {
     public static @Nullable Path createTempDirectory() {
         try {
             Path tempDir = Files.createTempDirectory("problemEditor");
-            Path sourceDir = Paths.get("src/lib/Libraries");
-            Path librariesDir = tempDir.resolve("Libraries");
-            Files.copy(sourceDir, librariesDir, StandardCopyOption.REPLACE_EXISTING);
-            Files.walk(sourceDir)
-                    .forEach(sourcePath -> {
-                        Path targetPath = librariesDir.resolve(sourceDir.relativize(sourcePath));
-                        try {
-                            Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            String jarFilePath = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            String sourceDirectory = "Libraries";
+            try {
+                MyFileHandler.copyDirectoryFromJar(jarFilePath, sourceDirectory, tempDir + "/Libraries");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Path subfolder = tempDir.resolve("temp");
             Files.createDirectories(subfolder);
             return tempDir;
@@ -113,6 +109,37 @@ public class MyFileHandler {
             Files.deleteIfExists(tempDir);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void copyDirectoryFromJar(String jarFilePath, String sourceDirectory, String destinationPath) throws IOException {
+        try (JarFile jarFile = new JarFile(jarFilePath)) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+
+                if (entryName.startsWith(sourceDirectory) && !entry.isDirectory()) {
+                    InputStream inputStream = jarFile.getInputStream(entry);
+                    File destFile = new File(destinationPath, entryName.substring(sourceDirectory.length() + 1));
+                    File destDir = destFile.getParentFile();
+
+                    if (!destDir.exists()) {
+                        destDir.mkdirs();
+                    }
+
+                    try (OutputStream outputStream = new FileOutputStream(destFile)) {
+                        byte[] buffer = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+
+                    inputStream.close();
+                }
+            }
         }
     }
 }
