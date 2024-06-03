@@ -86,7 +86,7 @@ public class XMLConverter {
             marshaller.setProperty(CharacterEscapeHandler.class.getName(), (CharacterEscapeHandler) (chars, start,
                                                                                                      length, isAtVal,
                                                                                                      writer) -> writer.write(chars, start, length));
-            marshaller.setProperty("jaxb.encoding", "ISO-8859-1");
+            marshaller.setProperty("jaxb.encoding", "UTF8");
             marshaller.marshal(object, new File(filePath));
         } catch (JAXBException e) {
             e.printStackTrace();
