@@ -66,4 +66,12 @@ public class GrammarDTO {
     public void setStartOutText(StartOutText startOutText) {
         this.startOutText = startOutText;
     }
+
+    public void setPostAnswerDate(PostAnswerDate postAnswerDate) {
+        this.postAnswerDate = postAnswerDate;
+    }
+
+    public PostAnswerDate getPostAnswerDate() {
+        return postAnswerDate;
+    }
 }

@@ -83,6 +83,7 @@ public class MachineController extends MVCController {
                 .input(machineView.getInputText())
                 .output(machineView.getOutputText())
                 .jffPathName(machineView.getChosenFileText())
+                .sampleSolution(machineView.getSampleSolutionText())
                 .type(machineView.getSelectedMachineType())
                 .determinism(machineView.getSelectedDeterminism())
                 .chosenLanguage(machineView.isGermanSelected() ? Locale.GERMAN : Locale.ENGLISH)

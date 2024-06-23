@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.problemEditor.enums.GrammarType;
 import org.problemEditor.model.GrammarModel;
 import org.problemEditor.model.xmlData.GrammarDTO;
+import org.problemEditor.model.xmlData.xmlTags.PostAnswerDate;
 import org.problemEditor.model.xmlData.xmlTags.Script;
 
 import java.util.Objects;
@@ -17,6 +18,7 @@ public class GrammarMapper extends Mapper {
         GrammarDTO grammarDTO = new GrammarDTO();
         grammarDTO.setScript(new Script(createPerlScriptString(grammarModel)));
         grammarDTO.setTranslated(getTranslatedElement(grammarModel.getChosenLanguage(), grammarModel.getDescription()));
+        grammarDTO.setPostAnswerDate(new PostAnswerDate(getTranslatedElement(grammarModel.getChosenLanguage(), grammarModel.getSampleSolution())));
         return grammarDTO;
     }
 

@@ -36,9 +36,6 @@ public class GraFlapProblemEditor {
     }
 
     private void createAndShowUI() {
-        int width = 500;
-        int height = 300;
-        startSize = new Dimension(width, height);
         frame = new JFrame("GraFLAP Problem Editor");
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
@@ -51,6 +48,7 @@ public class GraFlapProblemEditor {
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
+        startSize = chooseView.getMainPanel().getPreferredSize();
         frame.setSize(startSize);
         frame.setVisible(true);
     }

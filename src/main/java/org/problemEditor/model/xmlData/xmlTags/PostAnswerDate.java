@@ -10,6 +10,8 @@ public class PostAnswerDate {
     @XmlElement(name = "endouttext")
     private EndOutText endOutText;
 
+    public PostAnswerDate() {}
+
     public PostAnswerDate(Translated translated) {
         this.translated = translated;
         startOutText = new StartOutText();

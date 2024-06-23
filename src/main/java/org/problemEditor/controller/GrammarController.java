@@ -96,6 +96,7 @@ public class GrammarController extends MVCController {
                 .language(grammarView.getLanguageText())
                 .generatedWords(grammarView.getGeneratedWordsText())
                 .nonGeneratedWords(grammarView.getNonGeneratedWordsText())
+                .sampleSolution(grammarView.getSampleSolutionText())
                 .type(grammarView.getSelectedGrammarType())
                 .randomizeLowerCase(grammarView.isRandomizeLowerCaseIsSelected())
                 .chosenLanguage(grammarView.isGermanSelected() ? Locale.GERMAN : Locale.ENGLISH)

@@ -6,6 +6,7 @@ import org.problemEditor.enums.Determinism;
 import org.problemEditor.enums.MachineType;
 import org.problemEditor.model.MachineModel;
 import org.problemEditor.model.xmlData.MachineDTO;
+import org.problemEditor.model.xmlData.xmlTags.PostAnswerDate;
 import org.problemEditor.model.xmlData.xmlTags.Script;
 
 import java.util.regex.Matcher;
@@ -17,6 +18,7 @@ public class MachineMapper extends Mapper {
         MachineDTO machineDTO = new MachineDTO();
         machineDTO.setScript(new Script(createPerlScriptString(machineModel)));
         machineDTO.setTranslated(getTranslatedElement(machineModel.getChosenLanguage(), machineModel.getDescription()));
+        machineDTO.setPostAnswerDate(new PostAnswerDate(getTranslatedElement(machineModel.getChosenLanguage(), machineModel.getSampleSolution())));
         return machineDTO;
     }
 

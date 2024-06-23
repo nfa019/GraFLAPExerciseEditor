@@ -95,11 +95,11 @@ public class AutomatonMapper extends Mapper {
 
     private static @NotNull String createPerlScriptString(@NotNull AutomatonModel automatonModel) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getTaskTitleToXml(automatonModel.getTitle()));
         stringBuilder.append(getLanguageToXml(automatonModel.getLanguage(),
                 automatonModel.isRandomizeLowerCaseSelected()));
         stringBuilder.append(getAutomatonModeToXml(automatonModel.getState(), automatonModel.getType(),
                 automatonModel.isPartsDefinitionSelected()));
+        stringBuilder.append(getTaskTitleToXml(automatonModel.getTitle()));
         if (!Objects.equals(automatonModel.getType(), AutomatonType.NOT_SPECIFIED)) {
             stringBuilder.append(getAutomatonTypeToXml(automatonModel.getDeterminism(), automatonModel.getType()));
         }

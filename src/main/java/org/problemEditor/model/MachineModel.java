@@ -11,6 +11,7 @@ public class MachineModel {
     private final String description;
     private final String input;
     private final String output;
+    private final String sampleSolution;
     private final MachineType type;
     private final Determinism determinism;
     private final String jffPathName;
@@ -22,6 +23,7 @@ public class MachineModel {
         private String description = "";
         private String input = "";
         private String output = "";
+        private String sampleSolution = "";
         private MachineType type;
         private Determinism determinism = Determinism.NOT_SPECIFIED;
         private String jffPathName = "";
@@ -62,6 +64,11 @@ public class MachineModel {
             return this;
         }
 
+        public Builder sampleSolution(String sampleSolution) {
+            this.sampleSolution = sampleSolution;
+            return this;
+        }
+
         public Builder chosenLanguage(Locale chosenLanguage) {
             this.chosenLanguage = chosenLanguage;
             return this;
@@ -80,6 +87,7 @@ public class MachineModel {
         this.type = builder.type;
         this.determinism = builder.determinism;
         this.jffPathName = builder.jffPathName;
+        this.sampleSolution = builder.sampleSolution;
         this.chosenLanguage = builder.chosenLanguage;
     }
 
@@ -109,6 +117,10 @@ public class MachineModel {
 
     public String getJffPathName() {
         return jffPathName;
+    }
+
+    public String getSampleSolution() {
+        return sampleSolution;
     }
 
     public Locale getChosenLanguage() {

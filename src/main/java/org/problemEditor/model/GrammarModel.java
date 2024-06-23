@@ -11,6 +11,7 @@ public class GrammarModel {
     private final String language;
     private final String generatedWords;
     private final String nonGeneratedWords;
+    private final String sampleSolution;
     private final boolean randomizeLowerCase;
     private final GrammarType type;
     private final Locale chosenLanguage;
@@ -21,6 +22,7 @@ public class GrammarModel {
         private String language = "";
         private String generatedWords = "";
         private String nonGeneratedWords = "";
+        private String sampleSolution = "";
         private boolean randomizeLowerCase = true;
         private GrammarType type = GrammarType.NOT_SPECIFIED;
         private Locale chosenLanguage = Locale.GERMAN;
@@ -50,6 +52,11 @@ public class GrammarModel {
             return this;
         }
 
+        public Builder sampleSolution(String sampleSolution) {
+            this.sampleSolution = sampleSolution;
+            return this;
+        }
+
         public Builder randomizeLowerCase(boolean randomLetters) {
             this.randomizeLowerCase = randomLetters;
             return this;
@@ -76,6 +83,7 @@ public class GrammarModel {
         this.language = builder.language;
         this.generatedWords = builder.generatedWords;
         this.nonGeneratedWords = builder.nonGeneratedWords;
+        this.sampleSolution = builder.sampleSolution;
         this.randomizeLowerCase = builder.randomizeLowerCase;
         this.type = builder.type;
         this.chosenLanguage = builder.chosenLanguage;
@@ -99,6 +107,10 @@ public class GrammarModel {
 
     public String getNonGeneratedWords() {
         return nonGeneratedWords;
+    }
+
+    public String getSampleSolution() {
+        return sampleSolution;
     }
 
     public boolean isRandomizeLowerCase() {
