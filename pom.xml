@@ -5,14 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>GraFlap</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>GraFlapExEditor</artifactId>
+    <version>1.0</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+
     <repositories>
         <repository>
             <id>in-project</id>
@@ -24,57 +27,40 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.problemEditor.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>GraFlap-with-dependencies</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <archive>
-                                <manifest>
-                                    <mainClass>
-                                        org.problemEditor.Main
-                                    </mainClass>
-                                </manifest>
-                                <manifestEntries>
-                                    <Multi-Release>true</Multi-Release>
-                                    <Class-Path>.</Class-Path>
-                                </manifestEntries>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.problemEditor.Main</mainClass>
+                                </transformer>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
+
     <dependencies>
         <dependency>
-            <groupId>GraFlap</groupId>
-            <artifactId>GraFlap-sdk</artifactId>
+            <groupId>GF</groupId>
+            <artifactId>graflap</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>lcjflap2mdl</groupId>
-            <artifactId>lcjflap2mdl-sdk</artifactId>
+            <groupId>LCML</groupId>
+            <artifactId>lcjflap2mdl</artifactId>
             <version>0.1</version>
         </dependency>
         <dependency>
@@ -100,4 +86,6 @@
             <version>7.0.3</version>
         </dependency>
     </dependencies>
+
+
 </project>
