@@ -1,6 +1,6 @@
 package org.problemEditor.model.mapper;
 
-import de.HsH.inform.GraFlap.GraFlap;
+import de.hsh.inform.graflap.GraFlap;
 import org.jetbrains.annotations.NotNull;
 import org.problemEditor.enums.Determinism;
 import org.problemEditor.model.xmlData.xmlTags.Lang;
@@ -24,8 +24,7 @@ public abstract class Mapper {
         return "\n$numberOfWords = 20;" +
                 "\n$maxlength = 20;" +
                 "\n($externalurl,$input,$error) = jflapUrlInput($mode,$given,$type,$tasktitle,$numberOfWords," +
-                "$maxlength);" +
-                "\n$listSubmission = listOfSubmissions(JFC,JFlapCall);";
+                "$maxlength);" ;
     }
 
     protected static @NotNull String getJFFAndSVGString(String pathName) {
@@ -90,7 +89,6 @@ public abstract class Mapper {
         String modifiedString = modifiedLanguage.toString();
         StringBuilder languageBuilder = new StringBuilder();
         if (isRandomizeLowerCase) {
-            languageBuilder.append("\n@letter = ('a' .. 'z');\n$choice = random(0,$#letter-2,1);");
             languageBuilder.append(generateRandomLetterAssignments(uniqueChars));
         } else {
             languageBuilder.append(generateLetterAssignments(uniqueChars));
@@ -123,7 +121,9 @@ public abstract class Mapper {
                 buildString.append(String.format("\n$%c = $letter[$choice+%d];", iterator.next(), charAt));
                 charAt++;
             }
-            return buildString.toString();
+            String statement = "\n@letter = ('a' .. 'z');\n$choice = random(0,$#letter-"+ charAt +",1);";
+            statement = statement + buildString.toString();
+            return statement;
         }
     }
 

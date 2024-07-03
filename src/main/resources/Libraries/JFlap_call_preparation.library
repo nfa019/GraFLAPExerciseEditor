@@ -5,6 +5,7 @@
 #use strict;
 #use warnings;
 #use grammar;
+#use MIME::Base64;
 
 # shouldn't be declared as "my"
 # $bestlanguage = scalar(&languages(['de','en']));
@@ -15,6 +16,13 @@ $bestlanguage = "de";
 sub giveExampleWords{
      my $given = shift;
      return grammar::examplewords($given);
+}
+
+sub buildImageFromSVG{
+    my $given = shift;
+    my $encoded = encode_base64($given);
+    my $img = "<img src=\"data:image/svg+xml;base64," . $encoded . "\" alt=\"Automaton or Machine\" style=\"max-width:100%\"/>";
+    return $img;
 }
 
 

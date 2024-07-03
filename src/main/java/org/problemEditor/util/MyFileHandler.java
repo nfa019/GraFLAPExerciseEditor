@@ -35,7 +35,7 @@ public class MyFileHandler {
     }
 
     public static @Nullable String chooseFilePath(FileNameExtensionFilter filter) {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
         fileChooser.setFileFilter(filter);
         int selectionResult = fileChooser.showOpenDialog(null);
         if (selectionResult == JFileChooser.APPROVE_OPTION) {

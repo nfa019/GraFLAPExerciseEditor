@@ -108,9 +108,10 @@ public class AutomatonMapper extends Mapper {
             stringBuilder.append("\n$examplewords = giveExampleWords($given);");
         }
         stringBuilder.append(getJFFAndSVGString(automatonModel.getJffPathName()));
-        stringBuilder.append("\n$jff = &submission(\"JFC\",\"JFlapCall\");");
+
         stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
-        stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgstring);");
+        stringBuilder.append("\n$svgimage = buildImageFromSVG($svgstring)");
+        stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgimage);");
 
         return stringBuilder.toString();
     }
