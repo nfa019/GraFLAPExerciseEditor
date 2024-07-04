@@ -97,6 +97,7 @@ public class GrammarView extends BaseView {
         titleTextField.setText(model.getTitle());
         descriptionTextArea.setText(model.getDescription());
         languageTextField.setText(model.getLanguage());
+        sampleSolutionTextArea.setText(model.getSampleSolution());
         generatedWordsTextArea.setText(model.getGeneratedWords());
         nonGeneratedWordsTextArea.setText(model.getNonGeneratedWords());
     }

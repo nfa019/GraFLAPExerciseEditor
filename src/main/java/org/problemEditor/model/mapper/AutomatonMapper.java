@@ -18,6 +18,7 @@ public class AutomatonMapper extends Mapper {
     public static @NotNull AutomatonDTO mapToDTO(AutomatonModel automatonModel) {
         AutomatonDTO automatonDTO = new AutomatonDTO();
         automatonDTO.setScript(new Script(createPerlScriptString(automatonModel)));
+        automatonDTO.setMeta(new Meta("jff",automatonModel.getJff()));
         automatonDTO.setTranslated(getTranslatedElement(automatonModel.getChosenLanguage(),
                 automatonModel.getDescription()));
         automatonDTO.setPostAnswerDate(new PostAnswerDate(getTranslatedElement(automatonModel.getChosenLanguage(),
@@ -27,8 +28,10 @@ public class AutomatonMapper extends Mapper {
     }
 
     public static AutomatonModel mapToModel(@NotNull AutomatonDTO automatonDTO) {
+        String SampleSolution = automatonDTO.getPostAnswerDate().getTranslated().getLang().getValue();
         return new AutomatonModel.Builder()
                 .title(getTitleToModel(automatonDTO.getScript().getValue()))
+                .chosenLanguage(getChosenLanguageToModel(automatonDTO.getScript().getValue()))
                 .description(automatonDTO.getTranslated().getLang().getValue())
                 .language(getLanguageToModel(automatonDTO.getScript().getValue()))
                 .state(getAutomatonStateToModel(automatonDTO.getScript().getValue()))
@@ -36,6 +39,10 @@ public class AutomatonMapper extends Mapper {
                 .type(getAutomatonTypeToModel(automatonDTO.getScript().getValue()))
                 .randomizeLowerCase(isRandomLetters(automatonDTO.getScript().getValue()))
                 .partsDefinitionRequested(isPartsSet(automatonDTO.getScript().getValue()))
+                .automaticSolution(getAutomaticSolutionToModel(SampleSolution))
+                .sampleSolution(getSampleSolutionToModel(SampleSolution))
+                .jffPathName("internal")
+                .jff(automatonDTO.getMeta().getValue())
                 .build();
     }
 
@@ -95,6 +102,8 @@ public class AutomatonMapper extends Mapper {
 
     private static @NotNull String createPerlScriptString(@NotNull AutomatonModel automatonModel) {
         StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(generateLocaleStatement(automatonModel.getChosenLanguage()));
         stringBuilder.append(getLanguageToXml(automatonModel.getLanguage(),
                 automatonModel.isRandomizeLowerCaseSelected()));
         stringBuilder.append(getAutomatonModeToXml(automatonModel.getState(), automatonModel.getType(),
@@ -107,22 +116,42 @@ public class AutomatonMapper extends Mapper {
         if (automatonModel.getAcceptedWords().isEmpty()) {
             stringBuilder.append("\n$examplewords = giveExampleWords($given);");
         }
-        stringBuilder.append(getJFFAndSVGString(automatonModel.getJffPathName()));
+        System.out.println("jff= "+automatonModel.getJff());
+        stringBuilder.append(getJFFAndSVGString(automatonModel.getJff()));
 
         stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
-        stringBuilder.append("\n$svgimage = buildImageFromSVG($svgstring)");
+        stringBuilder.append("\n$svgimage = buildImageFromSVG($svgstring);");
         stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgimage);");
 
         return stringBuilder.toString();
     }
 
+
     private static @NotNull String getSampleSolutionToXml(String sampleSolutionText,
                                                           boolean isAutomaticSolutionSelected) {
         String sampleSolution = "";
         if (isAutomaticSolutionSelected) {
-            sampleSolution = "\n$solution";
+            sampleSolution = "\n$solution\n ";
         }
         return sampleSolution + sampleSolutionText;
+    }
+
+    private static String getSampleSolutionToModel(String script){
+        String sampletext = script;
+        if (script.contains("\n$solution\n")){
+            sampletext = script.replace("\n$solution\n", "");
+        }
+
+        return sampletext;
+
+    }
+
+    private static boolean getAutomaticSolutionToModel(String script){
+        if (script.contains("$solution")){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private static @NotNull String getAutomatonTypeToXml(@NotNull Determinism determinism, AutomatonType type) {

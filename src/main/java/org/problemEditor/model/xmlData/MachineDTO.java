@@ -23,6 +23,8 @@ public class MachineDTO {
     private EndOutText endOutText;
     @XmlElement(name = "postanswerdate")
     private PostAnswerDate postAnswerDate;
+    @XmlElement(name = "meta")
+    private Meta meta;
 
     public MachineDTO() {
         importJFCH = new Import("JFCH", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
@@ -77,5 +79,11 @@ public class MachineDTO {
 
     public void setPostAnswerDate(PostAnswerDate postAnswerDate) {
         this.postAnswerDate = postAnswerDate;
+    }
+
+    public Meta getMeta() {  return meta; }
+
+    public void setMeta(Meta meta) {
+        this.meta = meta;
     }
 }

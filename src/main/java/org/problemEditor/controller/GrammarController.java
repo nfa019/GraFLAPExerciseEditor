@@ -58,12 +58,19 @@ public class GrammarController extends MVCController {
     public void handlePreviewButton() {
         if (checkInputs()) {
             grammarModel = buildNewGrammarModel();
+            Locale loc = grammarModel.getChosenLanguage();
+            String options = "";
+            if (loc.equals(Locale.GERMAN)){
+                options += "--language=de";
+            }else{
+                options += "--language=en";
+            }
             Path tempDir = MyFileHandler.createTempDirectory();
             if (tempDir != null) {
                 String tempFilePath = tempDir + "/temp.problem";
                 String tempFileDirectory = tempDir + "/temp";
                 XMLConverter.createGrammarTaskFile(grammarModel, tempFilePath);
-                lc2mdl.Main.convertLCtoMoodle(new File(tempFilePath), new File(tempFileDirectory), 20, "temp.problem");
+                lc2mdl.Main.convertLCtoMoodle(new File(tempFilePath), new File(tempFileDirectory), 1, "",options);
                 MyFileHandler.showPreview(tempDir);
             }
         } else {
@@ -75,11 +82,18 @@ public class GrammarController extends MVCController {
     public void handleCreateButton() {
         if (checkInputs()) {
             grammarModel = buildNewGrammarModel();
+            Locale loc = grammarModel.getChosenLanguage();
+            String options = "";
+            if (loc.equals(Locale.GERMAN)){
+                options += "--language=de";
+            }else{
+                options += "--language=en";
+            }
             String filePath = saveGrammar();
             if (filePath != null) {
                 File directory = getDirectoryPath(filePath);
                 File createdFile = new File(filePath);
-                lc2mdl.Main.convertLCtoMoodle(createdFile, directory, 20, filePath);
+                lc2mdl.Main.convertLCtoMoodle(createdFile, directory, 20, "", options);
                 grammarView.showSuccessMessage("The task file was successfully created");
                 graFlapProblemEditor.navigateTo(PanelName.START);
             }

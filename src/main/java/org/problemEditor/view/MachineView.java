@@ -131,6 +131,7 @@ public class MachineView extends BaseView {
     private void updateTextComponents(@NotNull MachineModel model) {
         titleTextField.setText(model.getTitle());
         descriptionTextArea.setText(model.getDescription());
+        sampleSolutionTextArea.setText(model.getSampleSolution());
         chosenFileTextField.setText(model.getJffPathName());
         inputTextArea.setText(model.getInput());
         outputTextArea.setText(model.getOutput());

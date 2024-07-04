@@ -6,6 +6,7 @@ import org.problemEditor.enums.Determinism;
 import org.problemEditor.enums.MachineType;
 import org.problemEditor.model.MachineModel;
 import org.problemEditor.model.xmlData.MachineDTO;
+import org.problemEditor.model.xmlData.xmlTags.Meta;
 import org.problemEditor.model.xmlData.xmlTags.PostAnswerDate;
 import org.problemEditor.model.xmlData.xmlTags.Script;
 
@@ -17,30 +18,39 @@ public class MachineMapper extends Mapper {
     public static @NotNull MachineDTO mapToDTO(MachineModel machineModel) {
         MachineDTO machineDTO = new MachineDTO();
         machineDTO.setScript(new Script(createPerlScriptString(machineModel)));
+        machineDTO.setMeta(new Meta("jff",machineModel.getJff()));
         machineDTO.setTranslated(getTranslatedElement(machineModel.getChosenLanguage(), machineModel.getDescription()));
         machineDTO.setPostAnswerDate(new PostAnswerDate(getTranslatedElement(machineModel.getChosenLanguage(), machineModel.getSampleSolution())));
         return machineDTO;
     }
 
     public static MachineModel mapToModel(@NotNull MachineDTO machineDTO) {
+        System.out.println("sample solution"+machineDTO.getPostAnswerDate().getTranslated().getLang().getValue());
         return new MachineModel.Builder()
                 .title(getTitleToModel(machineDTO.getScript().getValue()))
+                .chosenLanguage(getChosenLanguageToModel(machineDTO.getScript().getValue()))
                 .description(machineDTO.getTranslated().getLang().getValue())
                 .type(getMachineTypeToModel(machineDTO.getScript().getValue()))
                 .determinism(getDeterminismToModel(machineDTO.getScript().getValue()))
+                .sampleSolution(machineDTO.getPostAnswerDate().getTranslated().getLang().getValue())
+                .jffPathName("internal")
+                .jff(machineDTO.getMeta().getValue())
                 .build();
     }
 
     private static @NotNull String createPerlScriptString(@NotNull MachineModel machineModel) {
-        return getTaskTitleToXml(machineModel.getTitle()) +
+        return  generateLocaleStatement(machineModel.getChosenLanguage()) +
+                getTaskTitleToXml(machineModel.getTitle()) +
                 getMachineMode() +
                 getMachineTypeToXML(machineModel.getDeterminism(), machineModel.getType()) +
                 getRemainingSettings() +
-                getJFFAndSVGString(machineModel.getJffPathName());
+                getJFFAndSVGString(machineModel.getJff()) +
+                "\n$svgimage = buildImageFromSVG($svgstring);\n"
+        ;
     }
 
     private static @NotNull String getMachineMode() {
-        return "\n$mode = \"mp\";";
+        return "\n$mode = 'mp';";
     }
 
     private static @Nullable MachineType getMachineTypeToModel(String script) {

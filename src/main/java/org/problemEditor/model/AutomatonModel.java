@@ -4,6 +4,7 @@ import org.problemEditor.enums.AutomatonState;
 import org.problemEditor.enums.AutomatonType;
 import org.problemEditor.enums.Determinism;
 import org.jetbrains.annotations.NotNull;
+import org.problemEditor.util.MyFileHandler;
 
 import java.util.Locale;
 
@@ -18,10 +19,12 @@ public class AutomatonModel {
     private final Determinism determinism;
     private final AutomatonType type;
     private final String jffPathName;
+    private final String jff;
     private final boolean randomizeLowerCase;
     private final boolean partsDefinitionRequested;
     private final boolean automaticSolution;
     private final Locale chosenLanguage;
+    private static String jffInternal="";
 
     public static class Builder {
         private String title = "";
@@ -31,6 +34,7 @@ public class AutomatonModel {
         private String nonAcceptedWords = "";
         private String sampleSolution = "";
         private String jffPathName = "";
+        private String jff ="";
         private AutomatonState state = AutomatonState.GRAMMAR;
         private AutomatonType type = AutomatonType.NOT_SPECIFIED;
         private Determinism determinism = Determinism.NOT_SPECIFIED;
@@ -73,6 +77,12 @@ public class AutomatonModel {
             this.jffPathName = jffPathName;
             return this;
         }
+
+        public Builder jff(String jff) {
+            this.jff = jff;
+            return this;
+        }
+
 
         public Builder state(AutomatonState state) {
             this.state = state;
@@ -126,11 +136,21 @@ public class AutomatonModel {
         this.state = builder.state;
         this.type = builder.type;
         this.determinism = builder.determinism;
-        this.jffPathName = builder.jffPathName;
         this.randomizeLowerCase = builder.randomizeLowerCase;
         this.partsDefinitionRequested = builder.partsDefinitionRequested;
         this.automaticSolution = builder.automaticSolution;
         this.chosenLanguage = builder.chosenLanguage;
+        this.jffPathName = builder.jffPathName;
+        if (this.getJffPathName().contains("internal")) {
+            if (!builder.jff.isEmpty()) {
+                jffInternal = builder.jff;
+            }
+            this.jff = jffInternal;
+        } else if (!this.jffPathName.isEmpty()) {
+            this.jff = MyFileHandler.readFile(this.getJffPathName());
+        } else {
+            this.jff = "";
+        }
     }
 
     public String getTitle() {
@@ -173,6 +193,8 @@ public class AutomatonModel {
         return jffPathName;
     }
 
+    public String getJff() { return jff;  }
+
     public boolean isRandomizeLowerCaseSelected() {
         return randomizeLowerCase;
     }
@@ -188,4 +210,5 @@ public class AutomatonModel {
     public Locale getChosenLanguage() {
         return chosenLanguage;
     }
+
 }

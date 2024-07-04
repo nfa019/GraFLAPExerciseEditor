@@ -25,10 +25,12 @@ public class GrammarMapper extends Mapper {
     public static GrammarModel mapToModel(@NotNull GrammarDTO grammarDTO) {
         return new GrammarModel.Builder()
                 .title(getTitleToModel(grammarDTO.getScript().getValue()))
+                .chosenLanguage(getChosenLanguageToModel(grammarDTO.getScript().getValue()))
                 .description(grammarDTO.getTranslated().getLang().getValue())
                 .language(getLanguageToModel(grammarDTO.getScript().getValue()))
                 .type(getGrammarTypeToModel(grammarDTO.getScript().getValue()))
                 .randomizeLowerCase(isRandomLetters(grammarDTO.getScript().getValue()))
+                .sampleSolution(grammarDTO.getPostAnswerDate().getTranslated().getLang().getValue())
                 .build();
     }
 
@@ -58,8 +60,9 @@ public class GrammarMapper extends Mapper {
     }
 
     private static @NotNull String createPerlScriptString(@NotNull GrammarModel grammarModel) {
-        return getTaskTitleToXml(grammarModel.getTitle()) +
+        return  generateLocaleStatement(grammarModel.getChosenLanguage()) +
                 getLanguageToXml(grammarModel.getLanguage(), grammarModel.isRandomizeLowerCase()) +
+                getTaskTitleToXml(grammarModel.getTitle()) +
                 (getGrammarModeToXml(grammarModel.getType())) +
                 getGrammarTypeToXml(grammarModel.getType()) +
                 getRemainingSettings();

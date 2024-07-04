@@ -27,9 +27,11 @@ public abstract class Mapper {
                 "$maxlength);" ;
     }
 
-    protected static @NotNull String getJFFAndSVGString(String pathName) {
-        String jff = MyFileHandler.readFile(pathName);
-        return "\n$jffstring = \"" + insertDollarSigns(jff, "(?m)(?<!<type>)(?<=>)([a-z].*)(?=<)") + "\";" + getSVGString(jff);
+
+    protected static @NotNull String getJFFAndSVGString(String jff) {
+
+            return "\n$jffstring = \"" + insertDollarSigns(jff, "(?m)(?<!<type>)(?<=>)([a-z].*)(?=<)") + "\";" + getSVGString(jff);
+
     }
 
     private static @NotNull String insertDollarSigns(String input, String regex) {
@@ -77,10 +79,14 @@ public abstract class Mapper {
     protected static @NotNull String getLanguageToXml(@NotNull String language, boolean isRandomizeLowerCase) {
         StringBuilder modifiedLanguage = new StringBuilder();
         Set<Character> uniqueChars = new HashSet<>();
+        boolean isGrammar = language.contains("->");
         for (int i = 0; i < language.length(); i++) {
             char currentChar = language.charAt(i);
             if (Character.isLowerCase(currentChar)) {
-                modifiedLanguage.append("$").append(currentChar).append(" ");
+                modifiedLanguage.append("$").append(currentChar);
+                if (isGrammar) {
+                    modifiedLanguage.append(" ");
+                }
                 uniqueChars.add(currentChar);
             } else {
                 modifiedLanguage.append(currentChar);
@@ -146,6 +152,29 @@ public abstract class Mapper {
         } else {
             System.out.println("The language was not found!");
             return "";
+        }
+    }
+
+
+
+    protected static Locale getChosenLanguageToModel(String script){
+        Locale locale = Locale.ENGLISH;
+        Pattern pattern = Pattern.compile("\\$bestlanguage\\s*=\\s*\"([ed])");
+        Matcher matcher = pattern.matcher(script);
+        if (matcher.find()) {
+            char nextChar = matcher.group(1).charAt(0);
+            if (nextChar == 'd') {
+                locale = Locale.GERMAN;
+            }
+        }
+        return locale;
+    }
+
+    protected static String generateLocaleStatement(Locale locale){
+        if (locale==Locale.GERMAN){
+            return "\n$bestlanguage=\"de\";";
+        } else {
+             return "\n$bestlanguage=\"en\";";
         }
     }
 

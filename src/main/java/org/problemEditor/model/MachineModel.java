@@ -3,6 +3,7 @@ package org.problemEditor.model;
 import org.problemEditor.enums.Determinism;
 import org.problemEditor.enums.MachineType;
 import org.jetbrains.annotations.NotNull;
+import org.problemEditor.util.MyFileHandler;
 
 import java.util.Locale;
 
@@ -15,7 +16,9 @@ public class MachineModel {
     private final MachineType type;
     private final Determinism determinism;
     private final String jffPathName;
+    private final String jff;
     private final Locale chosenLanguage;
+    private static String jffInternal="";
 
 
     public static class Builder {
@@ -27,6 +30,7 @@ public class MachineModel {
         private MachineType type;
         private Determinism determinism = Determinism.NOT_SPECIFIED;
         private String jffPathName = "";
+        private String jff ="";
         private Locale chosenLanguage = Locale.GERMAN;
 
         public Builder title(String title) {
@@ -64,6 +68,12 @@ public class MachineModel {
             return this;
         }
 
+        public Builder jff(String jff) {
+            this.jff = jff;
+            return this;
+        }
+
+
         public Builder sampleSolution(String sampleSolution) {
             this.sampleSolution = sampleSolution;
             return this;
@@ -86,9 +96,20 @@ public class MachineModel {
         this.output = builder.output;
         this.type = builder.type;
         this.determinism = builder.determinism;
-        this.jffPathName = builder.jffPathName;
         this.sampleSolution = builder.sampleSolution;
         this.chosenLanguage = builder.chosenLanguage;
+        this.jffPathName = builder.jffPathName;
+        if (this.getJffPathName().contains("internal")) {
+            if (!builder.jff.isEmpty()) {
+                jffInternal = builder.jff;
+            }
+            this.jff = jffInternal;
+        } else if (!this.jffPathName.isEmpty()) {
+            this.jff = MyFileHandler.readFile(this.getJffPathName());
+        } else {
+            this.jff = "";
+        }
+        System.out.println("jff nach Builder "+this.jff);
     }
 
     public String getTitle() {
@@ -126,4 +147,6 @@ public class MachineModel {
     public Locale getChosenLanguage() {
         return chosenLanguage;
     }
+
+    public String getJff() { return jff;  }
 }
