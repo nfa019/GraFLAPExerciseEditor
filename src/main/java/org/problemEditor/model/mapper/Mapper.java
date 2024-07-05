@@ -20,17 +20,65 @@ public abstract class Mapper {
         return String.format("\n$tasktitle = \"%s\";", title);
     }
 
-    protected static @NotNull String getRemainingSettings() {
-        return "\n$numberOfWords = 20;" +
-                "\n$maxlength = 20;" +
-                "\n($externalurl,$input,$error) = jflapUrlInput($mode,$given,$type,$tasktitle,$numberOfWords," +
-                "$maxlength);" ;
+    protected static @NotNull String getRemainingSettings(String wordsGiven) {
+        String perlStatement = "\n$maxlength = 20;";
+        if (wordsGiven.isEmpty()) {
+            perlStatement += "\n$numberOfWords = 20;" +
+                    "\n($externalurl,$input,$error) = jflapUrlInput($mode,$given,$type,$tasktitle,$numberOfWords," +
+                    "$maxlength);";
+        } else {
+            perlStatement += wordsGiven;
+            perlStatement += "\n($externalurl,$input,$error) = jflapUrlInput($mode,$given,$type,$tasktitle,$numberOfWords," +
+                    "$maxlength,$testwords);";
+        }
+
+        return perlStatement;
+    }
+
+    protected static @NotNull String createWordString (String good, String bad){
+        String perlStatement = "";
+
+        if (good.isEmpty() && bad.isEmpty()){
+        }  else {
+            String words = good + "!" + bad;
+            words = words.replaceAll("\\n", "%");
+            words = words.replaceAll("\\s", "");
+            words = words.replaceAll("([a-z])", "\\$$1");
+            String[] spl = words.split("!");
+            String[] first = spl[0].split("%");
+            String[] second = spl[1].split("%");
+            int num = first.length + second.length;
+            perlStatement += "\n$numberOfWords = " + num + ";";
+            perlStatement += "\n$testwords = \"" + words + "\";";
+        }
+
+        return perlStatement;
+    }
+
+    protected static @NotNull String[] getWordString (String script){
+        Pattern pattern = Pattern.compile("\\$testwords\\s*=\\s*\"([\\$Ea-z!%]*)\";");
+        Matcher matcher = pattern.matcher(script);
+        if (matcher.find()) {
+            String inout = matcher.group(1);
+            System.out.println(inout);
+            String[] goodbad = inout.split("!");
+            goodbad[0] = goodbad[0].replaceAll("%",System.lineSeparator());
+            goodbad[0] = goodbad[0].replaceAll("\\$","");
+            goodbad[1] = goodbad[1].replaceAll("%",System.lineSeparator());
+            goodbad[1] = goodbad[1].replaceAll("\\$","");
+            return goodbad;
+
+        } else {
+            return null;
+        }
+
     }
 
 
     protected static @NotNull String getJFFAndSVGString(String jff) {
-
-            return "\n$jffstring = \"" + insertDollarSigns(jff, "(?m)(?<!<type>)(?<=>)([a-z].*)(?=<)") + "\";" + getSVGString(jff);
+            String perlStatement = "\n$jffstring = \"" + insertDollarSigns(jff, "(?m)(?<!<type>)(?<=>)([a-z].*)(?=<)") + "\";" + getSVGString(jff);
+                   perlStatement += "\n$svgimage = buildImageFromSVG($svgstring);\n";
+            return perlStatement;
 
     }
 

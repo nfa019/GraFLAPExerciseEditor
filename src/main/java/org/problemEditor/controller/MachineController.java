@@ -46,7 +46,7 @@ public class MachineController extends MVCController {
     }
 
     public void handlePreviewButton() {
-        if (checkInputs()) {
+        if (checkInputs() && checkNumberInOutput()) {
             machineModel = buildNewMachineModel();
             Locale loc = machineModel.getChosenLanguage();
             String options = "";
@@ -63,6 +63,8 @@ public class MachineController extends MVCController {
                 lc2mdl.Main.convertLCtoMoodle(new File(tempFilePath), new File(tempFileDirectory), 1, "",options);
                 MyFileHandler.showPreview(tempDir);
             }
+        } else if (!checkNumberInOutput()){
+            machineView.showErrorMessage("You need the same number of input and output words !");
         } else {
             machineView.showValidationError();
             machineView.highlightEmptyFields();
@@ -124,6 +126,28 @@ public class MachineController extends MVCController {
             return filePath;
         }
         return null;
+    }
+
+    private boolean checkNumberInOutput(){
+        String inString = machineView.getInputText();
+        String outString = machineView.getOutputText();
+        if (inString.isEmpty()){
+            return false;
+        } else if (outString.isEmpty()) {
+            return true;
+        } else {
+            inString = inString.replaceAll("\\n", ",");
+            inString = inString.replaceAll("\\s", "");
+            outString = outString.replaceAll("\\n", ",");
+            outString = outString.replaceAll("\\s", "");
+            String[] inWords = inString.split(",");
+            String[] outWords = outString.split(",");
+            if (inWords.length == outWords.length){
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     private boolean checkInputs() {

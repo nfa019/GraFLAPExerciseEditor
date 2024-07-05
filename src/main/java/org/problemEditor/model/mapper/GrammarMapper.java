@@ -23,6 +23,8 @@ public class GrammarMapper extends Mapper {
     }
 
     public static GrammarModel mapToModel(@NotNull GrammarDTO grammarDTO) {
+        String[] goodbad = getWordString(grammarDTO.getScript().getValue());
+
         return new GrammarModel.Builder()
                 .title(getTitleToModel(grammarDTO.getScript().getValue()))
                 .chosenLanguage(getChosenLanguageToModel(grammarDTO.getScript().getValue()))
@@ -31,6 +33,8 @@ public class GrammarMapper extends Mapper {
                 .type(getGrammarTypeToModel(grammarDTO.getScript().getValue()))
                 .randomizeLowerCase(isRandomLetters(grammarDTO.getScript().getValue()))
                 .sampleSolution(grammarDTO.getPostAnswerDate().getTranslated().getLang().getValue())
+                .generatedWords(goodbad[0])
+                .nonGeneratedWords(goodbad[1])
                 .build();
     }
 
@@ -65,7 +69,8 @@ public class GrammarMapper extends Mapper {
                 getTaskTitleToXml(grammarModel.getTitle()) +
                 (getGrammarModeToXml(grammarModel.getType())) +
                 getGrammarTypeToXml(grammarModel.getType()) +
-                getRemainingSettings();
+                "\n$examplewords = giveExampleWords($given);" +
+                getRemainingSettings(createWordString(grammarModel.getGeneratedWords(),grammarModel.getNonGeneratedWords()));
     }
 
     private static @NotNull String getGrammarModeToXml(GrammarType grammarType) {

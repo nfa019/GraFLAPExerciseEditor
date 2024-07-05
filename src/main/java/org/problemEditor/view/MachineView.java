@@ -80,7 +80,7 @@ public class MachineView extends BaseView {
     protected ArrayList<JTextComponent> createTextComponentsList() {
         ArrayList<JTextComponent> textComponentsList = new ArrayList<>();
         textComponentsList.add(inputTextArea);
-        textComponentsList.add(outputTextArea);
+        // textComponentsList.add(outputTextArea);
         textComponentsList.add(titleTextField);
         textComponentsList.add(descriptionTextArea);
         textComponentsList.add(chosenFileTextField);
@@ -227,7 +227,7 @@ public class MachineView extends BaseView {
         panel3.setLayout(new GridLayoutManager(8, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel2.add(panel3, new GridConstraints(0, 0, 11, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(440, -1), null, 0, false));
         final JLabel label2 = new JLabel();
-        label2.setText("Please enter the input and output of the machine here");
+        label2.setText("Enter input and corresponding output words");
         panel3.add(label2, new GridConstraints(0, 0, 2, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label3 = new JLabel();
         label3.setText("Input");
@@ -280,10 +280,10 @@ public class MachineView extends BaseView {
         label8.setText("Please select the machine type here");
         panel6.add(label8, new GridConstraints(0, 0, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label9 = new JLabel();
-        label9.setText("If it's a Turing machine, please choose determinism");
+        label9.setText("For Turing machines choose determinism");
         panel6.add(label9, new GridConstraints(1, 0, 2, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label10 = new JLabel();
-        label10.setText("Please select the Jff file of the sample solution automaton here");
+        label10.setText("Please select the Jff file of the sample solution machine here");
         panel6.add(label10, new GridConstraints(5, 0, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         chosenFileTextField = new JTextField();
         panel6.add(chosenFileTextField, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));

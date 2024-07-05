@@ -28,7 +28,8 @@ public class AutomatonMapper extends Mapper {
     }
 
     public static AutomatonModel mapToModel(@NotNull AutomatonDTO automatonDTO) {
-        String SampleSolution = automatonDTO.getPostAnswerDate().getTranslated().getLang().getValue();
+        String sampleSolution = automatonDTO.getPostAnswerDate().getTranslated().getLang().getValue();
+        String[] goodbad = getWordString(automatonDTO.getScript().getValue());
         return new AutomatonModel.Builder()
                 .title(getTitleToModel(automatonDTO.getScript().getValue()))
                 .chosenLanguage(getChosenLanguageToModel(automatonDTO.getScript().getValue()))
@@ -39,8 +40,10 @@ public class AutomatonMapper extends Mapper {
                 .type(getAutomatonTypeToModel(automatonDTO.getScript().getValue()))
                 .randomizeLowerCase(isRandomLetters(automatonDTO.getScript().getValue()))
                 .partsDefinitionRequested(isPartsSet(automatonDTO.getScript().getValue()))
-                .automaticSolution(getAutomaticSolutionToModel(SampleSolution))
-                .sampleSolution(getSampleSolutionToModel(SampleSolution))
+                .automaticSolution(getAutomaticSolutionToModel(sampleSolution))
+                .sampleSolution(getSampleSolutionToModel(sampleSolution))
+                .acceptedWords(goodbad[0])
+                .nonAcceptedWords(goodbad[1])
                 .jffPathName("internal")
                 .jff(automatonDTO.getMeta().getValue())
                 .build();
@@ -112,19 +115,16 @@ public class AutomatonMapper extends Mapper {
         if (!Objects.equals(automatonModel.getType(), AutomatonType.NOT_SPECIFIED)) {
             stringBuilder.append(getAutomatonTypeToXml(automatonModel.getDeterminism(), automatonModel.getType()));
         }
-        stringBuilder.append(getRemainingSettings());
-        if (automatonModel.getAcceptedWords().isEmpty()) {
-            stringBuilder.append("\n$examplewords = giveExampleWords($given);");
-        }
-        System.out.println("jff= "+automatonModel.getJff());
-        stringBuilder.append(getJFFAndSVGString(automatonModel.getJff()));
+        stringBuilder.append(getRemainingSettings(createWordString(automatonModel.getAcceptedWords(),automatonModel.getNonAcceptedWords())));
 
+        stringBuilder.append("\n$examplewords = giveExampleWords($given);");
+        stringBuilder.append(getJFFAndSVGString(automatonModel.getJff()));
         stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
-        stringBuilder.append("\n$svgimage = buildImageFromSVG($svgstring);");
         stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgimage);");
 
         return stringBuilder.toString();
     }
+
 
 
     private static @NotNull String getSampleSolutionToXml(String sampleSolutionText,

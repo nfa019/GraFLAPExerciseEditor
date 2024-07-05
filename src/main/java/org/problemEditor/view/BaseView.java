@@ -21,6 +21,11 @@ public abstract class BaseView {
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    public void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(null, message, "Warning",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
     public void showSuccessMessage(String message) {
         JOptionPane.showMessageDialog(null, message, "Success",
                 JOptionPane.INFORMATION_MESSAGE);

@@ -25,7 +25,7 @@ public class MachineMapper extends Mapper {
     }
 
     public static MachineModel mapToModel(@NotNull MachineDTO machineDTO) {
-        System.out.println("sample solution"+machineDTO.getPostAnswerDate().getTranslated().getLang().getValue());
+        String[] inout = getInOutputString(machineDTO.getScript().getValue());
         return new MachineModel.Builder()
                 .title(getTitleToModel(machineDTO.getScript().getValue()))
                 .chosenLanguage(getChosenLanguageToModel(machineDTO.getScript().getValue()))
@@ -33,24 +33,99 @@ public class MachineMapper extends Mapper {
                 .type(getMachineTypeToModel(machineDTO.getScript().getValue()))
                 .determinism(getDeterminismToModel(machineDTO.getScript().getValue()))
                 .sampleSolution(machineDTO.getPostAnswerDate().getTranslated().getLang().getValue())
+                .input(inout[0])
+                .output(inout[1])
                 .jffPathName("internal")
                 .jff(machineDTO.getMeta().getValue())
                 .build();
     }
 
     private static @NotNull String createPerlScriptString(@NotNull MachineModel machineModel) {
+
         return  generateLocaleStatement(machineModel.getChosenLanguage()) +
                 getTaskTitleToXml(machineModel.getTitle()) +
-                getMachineMode() +
+                getMachineMode(machineModel.getOutput()) +
                 getMachineTypeToXML(machineModel.getDeterminism(), machineModel.getType()) +
-                getRemainingSettings() +
-                getJFFAndSVGString(machineModel.getJff()) +
-                "\n$svgimage = buildImageFromSVG($svgstring);\n"
+                getRemainingSettings(createInOutputString(machineModel.getInput(),machineModel.getOutput())) +
+                getJFFAndSVGString(machineModel.getJff())
         ;
     }
 
-    private static @NotNull String getMachineMode() {
-        return "\n$mode = 'mp';";
+    private static  @NotNull String createInOutputString(@NotNull String inputString,@NotNull  String outputString) {
+        String perlStatement = "";
+        String inString = inputString;
+        String outString = outputString;
+        if (inString.isEmpty()){
+            System.out.println("There should be at least input words");
+            return "";
+        } else
+            inString = inString.replaceAll("\\n", ",");
+            inString = inString.replaceAll("\\s", "");
+            String[] inWords = inString.split(",");
+            int num = inWords.length;
+            perlStatement += "\n$numberofwords = " + num + ";";
+            perlStatement += "\n$testwords = \"";
+            if (outString.isEmpty()) {
+                for (int i=0; i<inWords.length; i++){
+                    perlStatement += inWords[i];
+                    if (i<inWords.length-1) {
+                        perlStatement += "%";
+                    }
+                }
+             } else {
+                outString = outString.replaceAll("\\n", ",");
+                outString = outString.replaceAll("\\s", "");
+                String[] outWords = outString.split(",");
+                if (inWords.length == outWords.length) {
+                    for (int i=0; i<inWords.length; i++){
+                        perlStatement += inWords[i] + ";" + outWords[i];
+                        if (i<inWords.length-1) {
+                            perlStatement += "%";
+                        }
+                    }
+            perlStatement += "\";";
+            } else {
+                System.out.println("There should be the same number of in- and output words");
+            }
+        }
+
+        return perlStatement;
+    }
+
+    private static  @NotNull String[] getInOutputString(@NotNull String script) {
+        Pattern pattern = Pattern.compile("\\$testwords\\s*=\\s*\"([a-z#0-9;!%]*)\";");
+        Matcher matcher = pattern.matcher(script);
+        if (matcher.find()) {
+            String inout = matcher.group(1);
+            String[] io = {"", ""};
+
+            if (!inout.contains(";")){
+                io[0] = inout.replaceAll("%",System.lineSeparator());
+            } else {
+                String[] pairs = inout.split("%");
+                for (int i=0; i<pairs.length; i++){
+                    String[] s = pairs[i].split(";");
+                    io[0] += s[0];
+                    io[1] += s[1];
+                    if (i<pairs.length-1){
+                        io[0] += System.lineSeparator();
+                        io[1] += System.lineSeparator();
+                    }
+                }
+            }
+            return io;
+
+        } else {
+            return null;
+        }
+    }
+
+    private static @NotNull String getMachineMode(String out) {
+        if (out.isEmpty()){
+            return "\n$mode = 'mmw';";
+        }else {
+            return "\n$mode = 'mp';";
+        }
     }
 
     private static @Nullable MachineType getMachineTypeToModel(String script) {

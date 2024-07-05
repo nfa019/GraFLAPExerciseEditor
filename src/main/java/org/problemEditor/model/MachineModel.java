@@ -109,7 +109,7 @@ public class MachineModel {
         } else {
             this.jff = "";
         }
-        System.out.println("jff nach Builder "+this.jff);
+
     }
 
     public String getTitle() {
