@@ -81,9 +81,6 @@ public class AutomatonController extends MVCController {
                 lc2mdl.Main.convertLCtoMoodle(new File(tempFilePath), new File(tempFileDirectory), 1, "",options);
                 MyFileHandler.showPreview(tempDir);
             }
-        } else {
-            automatonView.showValidationError();
-            automatonView.highlightEmptyFields();
         }
     }
 
@@ -105,9 +102,6 @@ public class AutomatonController extends MVCController {
                 automatonView.showSuccessMessage("The task file was successfully created");
                 graFlapProblemEditor.navigateTo(PanelName.START);
             }
-        } else {
-            automatonView.showValidationError();
-            automatonView.highlightEmptyFields();
         }
     }
 
@@ -145,6 +139,23 @@ public class AutomatonController extends MVCController {
 
     private boolean checkInputs() {
         // Check entries here
-        return automatonView.checkMissingInputs();
+        boolean check = false;
+        if (automatonView.checkMissingInputs()){
+            if (automatonView.checkDisjointFields(automatonView.getAcceptedWordsText(),automatonView.getNonAcceptedWordsText())){
+                if (automatonView.checkWordsAlphabet(automatonView.getLanguageText(),automatonView.getAcceptedWordsText())){
+                    check = true;
+                }else{
+                   automatonView.showErrorMessage("Accepted words should be build only from chars from the alphabet.");
+                }
+            }else{
+                automatonView.showErrorMessage("Accepted and non-accepted words should be disjoint.");
+            }
+        }else{
+            automatonView.showValidationError();
+            automatonView.highlightEmptyFields();
+        }
+        return check ;
     }
+
+
 }

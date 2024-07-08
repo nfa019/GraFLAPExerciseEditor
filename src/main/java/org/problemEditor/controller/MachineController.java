@@ -46,7 +46,7 @@ public class MachineController extends MVCController {
     }
 
     public void handlePreviewButton() {
-        if (checkInputs() && checkNumberInOutput()) {
+        if (checkInputs()) {
             machineModel = buildNewMachineModel();
             Locale loc = machineModel.getChosenLanguage();
             String options = "";
@@ -63,11 +63,6 @@ public class MachineController extends MVCController {
                 lc2mdl.Main.convertLCtoMoodle(new File(tempFilePath), new File(tempFileDirectory), 1, "",options);
                 MyFileHandler.showPreview(tempDir);
             }
-        } else if (!checkNumberInOutput()){
-            machineView.showErrorMessage("You need the same number of input and output words !");
-        } else {
-            machineView.showValidationError();
-            machineView.highlightEmptyFields();
         }
     }
 
@@ -151,8 +146,20 @@ public class MachineController extends MVCController {
     }
 
     private boolean checkInputs() {
+        boolean check = false;
         // Check entries here
-        return machineView.checkMissingInputs();
+        if (machineView.checkMissingInputs()){
+            if (checkNumberInOutput()){
+                check = true;
+            }else{
+                machineView.showErrorMessage("You need the same number of input and output words !");
+            }
+        }else{
+            machineView.showValidationError();
+            machineView.highlightEmptyFields();
+        }
+
+        return check;
     }
 
     public void handleChooseFileButton() {

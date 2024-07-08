@@ -6,7 +6,9 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class BaseView {
 
@@ -68,6 +70,44 @@ public abstract class BaseView {
                 germanCheckBox.setSelected(!englishCheckBox.isSelected());
             }
         };
+    }
+
+    public boolean checkDisjointFields(String left, String right){
+        String[] good = left.split(System.lineSeparator());
+        String[] bad = right.split(System.lineSeparator());
+        Set<String> goodSet = new HashSet<>(Arrays.asList(good));
+        Set<String> badSet = new HashSet<>(Arrays.asList(bad));
+        return Collections.disjoint(goodSet,badSet);
+    }
+
+    public boolean checkWordsAlphabet(String language, String words) {
+        Set<Character> uniqueChars = new HashSet<>();
+
+        for (int i = 0; i < language.length(); i++) {
+            char currentChar = language.charAt(i);
+            if (Character.isLowerCase(currentChar)) {
+                uniqueChars.add(currentChar);
+            }
+        }
+        Iterator<Character> iterator = uniqueChars.iterator();
+        String alphabet = "E";
+        while (iterator.hasNext()) {
+                alphabet += iterator.next();
+            }
+
+        String plainwords = words.replaceAll("\\s","");
+        Pattern pattern = Pattern.compile("(["+alphabet+"]*)");
+        Matcher matcher = pattern.matcher(plainwords);
+        if (matcher.find()) {
+            if (matcher.group(1).equals(plainwords)){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
     }
 
     public abstract void init();

@@ -73,9 +73,6 @@ public class GrammarController extends MVCController {
                 lc2mdl.Main.convertLCtoMoodle(new File(tempFilePath), new File(tempFileDirectory), 1, "",options);
                 MyFileHandler.showPreview(tempDir);
             }
-        } else {
-            grammarView.showValidationError();
-            grammarView.highlightEmptyFields();
         }
     }
 
@@ -97,9 +94,6 @@ public class GrammarController extends MVCController {
                 grammarView.showSuccessMessage("The task file was successfully created");
                 graFlapProblemEditor.navigateTo(PanelName.START);
             }
-        } else {
-            grammarView.showValidationError();
-            grammarView.highlightEmptyFields();
         }
     }
 
@@ -132,6 +126,24 @@ public class GrammarController extends MVCController {
 
     private boolean checkInputs() {
         // Check entries here
-        return grammarView.checkMissingInputs();
+        boolean check = false;
+
+        if (grammarView.checkMissingInputs()){
+            if (grammarView.checkDisjointFields(grammarView.getGeneratedWordsText(),grammarView.getNonGeneratedWordsText())){
+                if (grammarView.checkWordsAlphabet(grammarView.getLanguageText(),grammarView.getGeneratedWordsText())){
+                    check = true;
+                }else{
+                    grammarView.showErrorMessage("Generated words should be build only from chars from the alphabet.");
+                }
+            }else{
+                grammarView.showErrorMessage("Generated and non-generated words should be disjoint.");
+            }
+        }else{
+            grammarView.showValidationError();
+            grammarView.highlightEmptyFields();
+        }
+
+        return check ;
     }
+
 }
