@@ -168,7 +168,7 @@ sub jflapUrlInput{
   if($mode ~~ @jflapWordModes || $mode ~~ @wordModes) {
      $input .= $numberOfWords.'#'.$testWords;
   } elsif ($mode ~~ @lcWordModes) {
-        if($testwords eq "-""){
+        if($testwords eq "-"){
         my $wordsAcceptNotAccept = "";
            if (($mode eq "arw") || ($mode eq "artw") || ($mode eq "arwp") || ($mode eq "artwp") || ($mode eq "grw") || ($mode eq "grtw")|| ($mode eq "rrw") ){
            $wordsAcceptNotAccept = grammar::wordsFromRegEx($numberOfWords, $maxlength, $given);

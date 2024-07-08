@@ -42,6 +42,11 @@ public abstract class Mapper {
         }  else {
             String words = good + "!" + bad;
             words = words.replaceAll("\\n", "%");
+            words = words.replaceAll("%!","!");
+            words = words.replaceAll("%%","%");
+            if (words.endsWith("%")){
+                words = words.substring(0,words.length()-2);
+            }
             words = words.replaceAll("\\s", "");
             words = words.replaceAll("([a-z])", "\\$$1");
             String[] spl = words.split("!");
@@ -60,7 +65,6 @@ public abstract class Mapper {
         Matcher matcher = pattern.matcher(script);
         if (matcher.find()) {
             String inout = matcher.group(1);
-            System.out.println(inout);
             String[] goodbad = inout.split("!");
             goodbad[0] = goodbad[0].replaceAll("%",System.lineSeparator());
             goodbad[0] = goodbad[0].replaceAll("\\$","");
