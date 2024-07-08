@@ -31,28 +31,13 @@ public class GrammarDTO {
         endOutText = new EndOutText();
     }
 
-    public Import getImportJFCH() {
-        return importJFCH;
-    }
 
     public Script getScript() {
         return script;
     }
 
-    public StartOutText getStartOutText() {
-        return startOutText;
-    }
-
     public Translated getTranslated() {
         return translated;
-    }
-
-    public EndOutText getEndOutText() {
-        return endOutText;
-    }
-
-    public Import getImportJfl() {
-        return importJfl;
     }
 
     public void setTranslated(Translated translated) {
@@ -61,10 +46,6 @@ public class GrammarDTO {
 
     public void setScript(Script script) {
         this.script = script;
-    }
-
-    public void setStartOutText(StartOutText startOutText) {
-        this.startOutText = startOutText;
     }
 
     public void setPostAnswerDate(PostAnswerDate postAnswerDate) {

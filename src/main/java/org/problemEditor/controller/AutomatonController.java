@@ -143,7 +143,11 @@ public class AutomatonController extends MVCController {
         if (automatonView.checkMissingInputs()){
             if (automatonView.checkDisjointFields(automatonView.getAcceptedWordsText(),automatonView.getNonAcceptedWordsText())){
                 if (automatonView.checkWordsAlphabet(automatonView.getLanguageText(),automatonView.getAcceptedWordsText())){
-                    check = true;
+                    if (automatonView.checkLanguage(automatonView.getLanguageText())){
+                        check = true;
+                    }else{
+                        automatonView.showErrorMessage("Language not given by a valid string.");
+                    }
                 }else{
                    automatonView.showErrorMessage("Accepted words should be build only from chars from the alphabet.");
                 }

@@ -131,7 +131,11 @@ public class GrammarController extends MVCController {
         if (grammarView.checkMissingInputs()){
             if (grammarView.checkDisjointFields(grammarView.getGeneratedWordsText(),grammarView.getNonGeneratedWordsText())){
                 if (grammarView.checkWordsAlphabet(grammarView.getLanguageText(),grammarView.getGeneratedWordsText())){
-                    check = true;
+                    if (grammarView.checkLanguage(grammarView.getLanguageText())){
+                        check = true;
+                    }else{
+                        grammarView.showErrorMessage("Language not given by a valid string.");
+                    }
                 }else{
                     grammarView.showErrorMessage("Generated words should be build only from chars from the alphabet.");
                 }

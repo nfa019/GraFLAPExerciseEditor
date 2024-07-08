@@ -110,6 +110,42 @@ public abstract class BaseView {
 
     }
 
+    public boolean checkLanguage(String language){
+        boolean check = false;
+        if (isGrammar(language)) {
+            Pattern pattern = Pattern.compile("([a-z01A-Z->\\|\\s,]*)");
+            Matcher matcher = pattern.matcher(language);
+            if (matcher.find()) {
+                if (matcher.group(1).equals(language)) {
+                    Pattern patternS = Pattern.compile("S\\s*->");
+                    Matcher matcherS = patternS.matcher(language);
+                    if (matcherS.find()) {
+                        check = true;
+                    }
+                }
+            }
+        }else{
+            Pattern pattern = Pattern.compile("([a-z01\\+\\*\\|\\s\\(\\)]*)");
+            Matcher matcher = pattern.matcher(language);
+            if (matcher.find()) {
+                if (matcher.group(1).equals(language)) {
+                    Pattern patternS = Pattern.compile("[a-z01]+");
+                    Matcher matcherS = patternS.matcher(language);
+                    if (matcherS.find()) {
+                        check = true;
+                    }
+
+                }
+            }
+        }
+
+        return check;
+    }
+
+    public boolean isGrammar(String language){
+        return language.contains("->");
+    }
+
     public abstract void init();
 
     protected abstract ArrayList<JTextComponent> createTextComponentsList();

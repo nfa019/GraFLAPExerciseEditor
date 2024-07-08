@@ -168,31 +168,35 @@ sub jflapUrlInput{
   if($mode ~~ @jflapWordModes || $mode ~~ @wordModes) {
      $input .= $numberOfWords.'#'.$testWords;
   } elsif ($mode ~~ @lcWordModes) {
-    my $wordsAcceptNotAccept = "";
-       if (($mode eq "arw") || ($mode eq "artw") || ($mode eq "arwp") || ($mode eq "artwp") || ($mode eq "grw") || ($mode eq "grtw")|| ($mode eq "rrw") ){
-       $wordsAcceptNotAccept = grammar::wordsFromRegEx($numberOfWords, $maxlength, $given);
-     } else
-     {  $wordsAcceptNotAccept = grammar::wordsFromGrammar($numberOfWords, $given);
-     }
-        @splitwords = split(/!/, $wordsAcceptNotAccept);
-        if ($splitwords[0] eq ""){
-         if ($bestlanguage eq "de"){
-              $error .= "Vorgegebene Grammatik/Regex produziert keine Terminalwörter. Bitte überprüfen! ";
-            }else{
-              $error .= "Given grammar/regex does'nt produce terminal words. Please check grammar. ";
+        if($testwords eq "-""){
+        my $wordsAcceptNotAccept = "";
+           if (($mode eq "arw") || ($mode eq "artw") || ($mode eq "arwp") || ($mode eq "artwp") || ($mode eq "grw") || ($mode eq "grtw")|| ($mode eq "rrw") ){
+           $wordsAcceptNotAccept = grammar::wordsFromRegEx($numberOfWords, $maxlength, $given);
+         } else
+         {  $wordsAcceptNotAccept = grammar::wordsFromGrammar($numberOfWords, $given);
+         }
+            @splitwords = split(/!/, $wordsAcceptNotAccept);
+            if ($splitwords[0] eq ""){
+             if ($bestlanguage eq "de"){
+                  $error .= "Vorgegebene Grammatik/Regex produziert keine Terminalwörter. Bitte überprüfen! ";
+                }else{
+                  $error .= "Given grammar/regex does'nt produce terminal words. Please check grammar. ";
+                }
             }
-        }
-        if ($splitwords[1] eq ""){
-         if ($bestlanguage eq "de"){
-             $error .= "Zur vorgegebenen Grammatik/Regex wurden keine falschen Terminalwörter gefunden. Bitte überprüfen! ";
-            }else{
-              $error .= "For given grammar/regex no wrong terminal words were produced. Please check. ";
+            if ($splitwords[1] eq ""){
+             if ($bestlanguage eq "de"){
+                 $error .= "Zur vorgegebenen Grammatik/Regex wurden keine falschen Terminalwörter gefunden. Bitte überprüfen! ";
+                }else{
+                  $error .= "For given grammar/regex no wrong terminal words were produced. Please check. ";
+                }
             }
+          @rightWords = split(/%/, $splitwords[0]);
+          @wrongWords = split(/%/, $splitwords[1]);
+          $numberWords = @rightWords + @wrongWords;
+          $input .= $numberWords.'#'.$wordsAcceptNotAccept;
+        }else{
+        $input .= $numberOfWords.'#'.$testWords;
         }
-      @rightWords = split(/%/, $splitwords[0]);
-      @wrongWords = split(/%/, $splitwords[1]);
-      $numberWords = @rightWords + @wrongWords;
-      $input .= $numberWords.'#'.$wordsAcceptNotAccept;
   } elsif ( $mode ~~ @exampleModes ) {
        $input .= '0#'.$testWords;
   } elsif ($mode ~~ @machineModes || $mode ~~ @algorithmModes) {

@@ -21,6 +21,8 @@ public class AutomatonDTO {
     private Translated translated;
     @XmlElement(name = "endouttext")
     private EndOutText endOutText;
+    @XmlElement(name = "import")
+    private Import importJfl;
     @XmlElement(name = "postanswerdate")
     private PostAnswerDate postAnswerDate;
     @XmlElement(name = "meta")
@@ -34,21 +36,12 @@ public class AutomatonDTO {
                 "/Libraries/ReadAutomaton.library");
         importJffa = new Import("jffa", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/jffautomata.library");
+        importJfl = new Import("jfl", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+                "/JFlap_callAutomaton.library");
         startOutText = new StartOutText();
         endOutText = new EndOutText();
     }
 
-    public Import getImportJFCH() {
-        return importJFCH;
-    }
-
-    public Import getImportJffa() {
-        return importJffa;
-    }
-
-    public Import getImportJffperllib() {
-        return importJffperllib;
-    }
 
     public Script getScript() {
         return script;
@@ -56,14 +49,6 @@ public class AutomatonDTO {
 
     public Translated getTranslated() {
         return translated;
-    }
-
-    public StartOutText getStartOutText() {
-        return startOutText;
-    }
-
-    public EndOutText getEndOutText() {
-        return endOutText;
     }
 
     public PostAnswerDate getPostAnswerDate() {

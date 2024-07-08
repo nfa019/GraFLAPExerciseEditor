@@ -1,21 +1,20 @@
 <library>
-<part display="JFlapCall" id="77">
-<script type="loncapa/perl">$CodemirrorMime = "xml";
-</script>
-
-
-
-<externalresponse answer="$input" form="%args" id="0" url="$externalurl">
-		
-		<textfield spellcheck="none"></textfield>
-</externalresponse>
 <startouttext />
-</div>
+<hr />
+<p />
+<translated>
+<lang which="de">
+Laden Sie Ihre Jff-Datei im untenstehenden Feld hoch!
+</lang>
+<lang which="en">
+Load Your jff file in the following field!
+ </lang>
+<lang which="default">
+Load Your jff file in the following field!
+ </lang>
+</translated>
+<p />
 <endouttext />
-
-</part>
-
-
 </library>
 
 
