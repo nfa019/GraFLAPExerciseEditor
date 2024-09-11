@@ -4,6 +4,6 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>LCML</groupId>
     <artifactId>lcjflap2mdl</artifactId>
-    <version>0.2</version>
+    <version>0.5</version>
     <description>POM was created from install:install-file</description>
 </project>

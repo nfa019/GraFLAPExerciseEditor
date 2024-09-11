@@ -60,8 +60,8 @@
         </dependency>
         <dependency>
             <groupId>LCML</groupId>
-            <artifactId>lcjflap2mdl</artifactId>
-            <version>0.2</version>
+            <artifactId>lcJflap2mdl</artifactId>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

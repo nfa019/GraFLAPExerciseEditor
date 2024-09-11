@@ -63,19 +63,17 @@ public abstract class Mapper {
     protected static @NotNull String[] getWordString (String script){
         Pattern pattern = Pattern.compile("\\$testwords\\s*=\\s*\"([\\$Ea-z!%]*)\";");
         Matcher matcher = pattern.matcher(script);
+        String[] goodbad = {"",""};
         if (matcher.find()) {
             String inout = matcher.group(1);
-            String[] goodbad = inout.split("!");
+            goodbad = inout.split("!");
             goodbad[0] = goodbad[0].replaceAll("%",System.lineSeparator());
             goodbad[0] = goodbad[0].replaceAll("\\$","");
             goodbad[1] = goodbad[1].replaceAll("%",System.lineSeparator());
             goodbad[1] = goodbad[1].replaceAll("\\$","");
-            return goodbad;
 
-        } else {
-            return null;
         }
-
+        return goodbad;
     }
 
 

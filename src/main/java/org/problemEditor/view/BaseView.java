@@ -73,11 +73,18 @@ public abstract class BaseView {
     }
 
     public boolean checkDisjointFields(String left, String right){
-        String[] good = left.split(System.lineSeparator());
-        String[] bad = right.split(System.lineSeparator());
-        Set<String> goodSet = new HashSet<>(Arrays.asList(good));
-        Set<String> badSet = new HashSet<>(Arrays.asList(bad));
-        return Collections.disjoint(goodSet,badSet);
+        boolean check = true;
+        if (!((left.isEmpty()||left.equals(""))&&(right.isEmpty()||right.equals("")))) {
+            String[] good = left.split(System.lineSeparator());
+            String[] bad = right.split(System.lineSeparator());
+            Set<String> goodSet = new HashSet<>(Arrays.asList(good));
+            Set<String> badSet = new HashSet<>(Arrays.asList(bad));
+            check = goodSet.isEmpty() && badSet.isEmpty();
+            if (!check) {
+                check = Collections.disjoint(goodSet, badSet);
+            }
+        }
+        return check;
     }
 
     public boolean checkWordsAlphabet(String language, String words) {
