@@ -69,6 +69,8 @@ public class GrammarMapper extends Mapper {
                 getTaskTitleToXml(grammarModel.getTitle()) +
                 (getGrammarModeToXml(grammarModel.getType())) +
                 getGrammarTypeToXml(grammarModel.getType()) +
+                "\n$grammarstring = $given;" +
+                "\n$modelsolution=\"grammar\";" +
                 "\n$examplewords = giveExampleWords($given);" +
                 getRemainingSettings(createWordString(grammarModel.getGeneratedWords(),grammarModel.getNonGeneratedWords()));
     }

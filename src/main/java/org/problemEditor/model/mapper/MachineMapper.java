@@ -46,6 +46,7 @@ public class MachineMapper extends Mapper {
                 getTaskTitleToXml(machineModel.getTitle()) +
                 getMachineMode(machineModel.getOutput()) +
                 getMachineTypeToXML(machineModel.getDeterminism(), machineModel.getType()) +
+                "\n$modelsolution = \"jff\";" +
                 getRemainingSettings(createInOutputString(machineModel.getInput(),machineModel.getOutput())) +
                 getJFFAndSVGString(machineModel.getJff())
         ;

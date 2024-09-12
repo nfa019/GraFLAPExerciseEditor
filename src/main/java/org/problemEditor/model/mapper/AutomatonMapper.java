@@ -115,6 +115,13 @@ public class AutomatonMapper extends Mapper {
         if (!Objects.equals(automatonModel.getType(), AutomatonType.NOT_SPECIFIED)) {
             stringBuilder.append(getAutomatonTypeToXml(automatonModel.getDeterminism(), automatonModel.getType()));
         }
+        String msol = "\n$modelsolution = \"jff";
+        if (automatonModel.isPartsDefinitionSelected()){
+            msol += ",states,alphabet,transitions,initials,finals\";";
+        } else {
+            msol += "\";";
+        }
+        stringBuilder.append(msol);
         stringBuilder.append(getRemainingSettings(createWordString(automatonModel.getAcceptedWords(),automatonModel.getNonAcceptedWords())));
 
         stringBuilder.append("\n$examplewords = giveExampleWords($given);");
