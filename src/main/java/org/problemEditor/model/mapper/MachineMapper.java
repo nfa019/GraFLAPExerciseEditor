@@ -107,8 +107,20 @@ public class MachineMapper extends Mapper {
                 String[] pairs = inout.split("%");
                 for (int i=0; i<pairs.length; i++){
                     String[] s = pairs[i].split(";");
-                    io[0] += s[0];
-                    io[1] += s[1];
+                    if (pairs[i].startsWith(";")){
+                            if (pairs[i].endsWith(";")){
+                                // do nothing
+                            }else {
+                                 io[1] += s[0];
+                            }
+                    }else {
+                        io[0] += s[0];
+                        if (pairs[i].endsWith(";")) {
+                            // do nothing
+                        } else {
+                            io[1] += s[1];
+                        }
+                    }
                     if (i<pairs.length-1){
                         io[0] += System.lineSeparator();
                         io[1] += System.lineSeparator();
