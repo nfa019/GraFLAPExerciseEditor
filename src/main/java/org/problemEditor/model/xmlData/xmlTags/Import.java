@@ -6,17 +6,14 @@ import javax.xml.bind.annotation.*;
 public class Import {
     @XmlAttribute
     private String id;
-    @XmlAttribute
-    private String importMode;
     @XmlValue
     private String value;
 
     public Import() {
     }
 
-    public Import(String id, String importMode, String value) {
+    public Import(String id,  String value) {
         this.id = id;
-        this.importMode = importMode;
         this.value = value;
     }
 
@@ -24,9 +21,6 @@ public class Import {
         return id;
     }
 
-    public String getImportMode() {
-        return importMode;
-    }
 
     public String getValue() {
         return value;

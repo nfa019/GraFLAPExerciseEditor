@@ -59,7 +59,7 @@ public class MachineMapper extends Mapper {
         if (inString.isEmpty()){
             System.out.println("There should be at least input words");
             return "";
-        } else
+        } else {
             inString = inString.replaceAll("\\n", ",");
             inString = inString.replaceAll("\\s", "");
             String[] inWords = inString.split(",");
@@ -67,38 +67,39 @@ public class MachineMapper extends Mapper {
             perlStatement += "\n$numberofwords = " + num + ";";
             perlStatement += "\n$testwords = \"";
             if (outString.isEmpty()) {
-                for (int i=0; i<inWords.length; i++){
+                for (int i = 0; i < inWords.length; i++) {
                     perlStatement += inWords[i];
-                    if (i<inWords.length-1) {
+                    if (i < inWords.length - 1) {
                         perlStatement += "%";
                     }
                 }
-             } else {
+            } else {
                 outString = outString.replaceAll("\\n", ",");
                 outString = outString.replaceAll("\\s", "");
                 String[] outWords = outString.split(",");
                 if (inWords.length == outWords.length) {
-                    for (int i=0; i<inWords.length; i++){
+                    for (int i = 0; i < inWords.length; i++) {
                         perlStatement += inWords[i] + ";" + outWords[i];
-                        if (i<inWords.length-1) {
+                        if (i < inWords.length - 1) {
                             perlStatement += "%";
                         }
                     }
-            perlStatement += "\";";
-            } else {
-                System.out.println("There should be the same number of in- and output words");
+                    perlStatement += "\";";
+                } else {
+                    System.out.println("There should be the same number of in- and output words");
+                }
             }
         }
-
         return perlStatement;
     }
 
     private static  @NotNull String[] getInOutputString(@NotNull String script) {
-        Pattern pattern = Pattern.compile("\\$testwords\\s*=\\s*\"([a-z#0-9;!%]*)\";");
+        Pattern pattern = Pattern.compile("\\$testwords\\s*=\\s*\"([a-z#0-9;!%\\|]*)\";");
         Matcher matcher = pattern.matcher(script);
+        String[] io = {"", ""};
+
         if (matcher.find()) {
             String inout = matcher.group(1);
-            String[] io = {"", ""};
 
             if (!inout.contains(";")){
                 io[0] = inout.replaceAll("%",System.lineSeparator());
@@ -114,11 +115,10 @@ public class MachineMapper extends Mapper {
                     }
                 }
             }
-            return io;
 
-        } else {
-            return null;
+
         }
+        return io;
     }
 
     private static @NotNull String getMachineMode(String out) {

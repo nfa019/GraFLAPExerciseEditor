@@ -1,7 +1,5 @@
 <library>
 <startouttext />
-<hr />
-<p />
 <translated>
 <lang which="de">
 Laden Sie Ihre Jff-Datei im untenstehenden Feld hoch!
@@ -13,7 +11,6 @@ Load Your jff file in the following field!
 Load Your jff file in the following field!
  </lang>
 </translated>
-<p />
 <endouttext />
 </library>
 

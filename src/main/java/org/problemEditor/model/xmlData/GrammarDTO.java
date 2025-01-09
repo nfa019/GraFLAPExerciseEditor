@@ -23,9 +23,9 @@ public class GrammarDTO {
     private PostAnswerDate postAnswerDate;
 
     public GrammarDTO() {
-        importJFCH = new Import("JFCH", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+        importJFCH = new Import("JFCH",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/JFlap_call_preparation.library");
-        importJfl = new Import("jfl", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+        importJfl = new Import("jfl", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/JFlap_callGrammar.library");
         startOutText = new StartOutText();
         endOutText = new EndOutText();

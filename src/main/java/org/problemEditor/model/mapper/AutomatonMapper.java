@@ -105,6 +105,7 @@ public class AutomatonMapper extends Mapper {
 
     private static @NotNull String createPerlScriptString(@NotNull AutomatonModel automatonModel) {
         StringBuilder stringBuilder = new StringBuilder();
+        AutomatonType automatonType = automatonModel.getType();
 
         stringBuilder.append(generateLocaleStatement(automatonModel.getChosenLanguage()));
         stringBuilder.append(getLanguageToXml(automatonModel.getLanguage(),
@@ -126,8 +127,12 @@ public class AutomatonMapper extends Mapper {
 
         stringBuilder.append("\n$examplewords = giveExampleWords($given);");
         stringBuilder.append(getJFFAndSVGString(automatonModel.getJff()));
-        stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
-        stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgimage);");
+        if (automatonType.equals(AutomatonType.TURING_AUTOMATON)) {
+                stringBuilder.append("\n$solution = $svgimage;");
+            }else {
+                stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
+                stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgimage);");
+            }
 
         return stringBuilder.toString();
     }

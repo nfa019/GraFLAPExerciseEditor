@@ -110,7 +110,7 @@ public abstract class Mapper {
         }
         svgString = svgString.replaceAll("(<[^<]*</[^>]*>)", "\n$1");
         ;
-        svgString = insertDollarSigns(svgString, "(?<=>)(?!q[0-9])(.*)(?=</text>)");
+        svgString = insertDollarSigns(svgString, "(?<=>)([a-e])(.*)(?=</text>)");
         parsedString.append(svgString);
         parsedString.append("\";");
         return parsedString.toString();

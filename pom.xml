@@ -56,12 +56,12 @@
         <dependency>
             <groupId>GF</groupId>
             <artifactId>graflap</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>LCML</groupId>
             <artifactId>lcJflap2mdl</artifactId>
-            <version>0.5</version>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

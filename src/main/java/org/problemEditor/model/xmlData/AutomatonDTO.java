@@ -30,13 +30,13 @@ public class AutomatonDTO {
 
 
     public AutomatonDTO() {
-        importJFCH = new Import("JFCH", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+        importJFCH = new Import("JFCH",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/JFlap_call_preparation.library");
-        importJffperllib = new Import("jffperllib", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik" +
+        importJffperllib = new Import("jffperllib",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik" +
                 "/Libraries/ReadAutomaton.library");
-        importJffa = new Import("jffa", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+        importJffa = new Import("jffa",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/jffautomata.library");
-        importJfl = new Import("jfl", "", "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+        importJfl = new Import("jfl",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/JFlap_callAutomaton.library");
         startOutText = new StartOutText();
         endOutText = new EndOutText();
