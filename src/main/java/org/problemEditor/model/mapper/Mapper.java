@@ -78,7 +78,8 @@ public abstract class Mapper {
 
 
     protected static @NotNull String getJFFAndSVGString(String jff) {
-            String perlStatement = "\n$jffstring = \"" + insertDollarSigns(jff, "(?m)(?<!<type>)(?<=>)([a-z].*)(?=<)") + "\";" + getSVGString(jff);
+            String perlStatement = "\n$jffstring = \"" + insertDollarSigns(jff, "(?m)(?<!<type>)(?<=>)([a-z].*)(?=<)") +
+                    "\";" + getSVGString(jff);
                    perlStatement += "\n$svgimage = buildImageFromSVG($svgstring);\n";
             return perlStatement;
 
@@ -90,7 +91,7 @@ public abstract class Mapper {
         StringBuilder result = new StringBuilder();
         while (matcher.find()) {
             String match = matcher.group(1);
-            String replaced = match.replaceAll("([a-z])", "\\$$1 ");
+            String replaced = match.replaceAll("([a-e])", "\\$$1 ");
             replaced = Matcher.quoteReplacement(replaced);
             matcher.appendReplacement(result, replaced);
         }
@@ -103,6 +104,7 @@ public abstract class Mapper {
         StringBuilder parsedString = new StringBuilder();
         parsedString.append("\n$svgstring = \"");
         String svgString;
+
         try {
             svgString = GraFlap.parseAndProcessSubmission(toParse);
         } catch (Exception e) {
@@ -110,7 +112,7 @@ public abstract class Mapper {
         }
         svgString = svgString.replaceAll("(<[^<]*</[^>]*>)", "\n$1");
         ;
-        svgString = insertDollarSigns(svgString, "(?<=>)([a-e])(.*)(?=</text>)");
+        svgString = insertDollarSigns(svgString, "(?<=>)(.*)([a-zA-Z01\\|,;:]*)(.*)(?=</text>)");
         parsedString.append(svgString);
         parsedString.append("\";");
         return parsedString.toString();
