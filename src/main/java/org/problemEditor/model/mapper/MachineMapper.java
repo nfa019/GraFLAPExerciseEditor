@@ -64,7 +64,7 @@ public class MachineMapper extends Mapper {
             inString = inString.replaceAll("\\s", "");
             String[] inWords = inString.split(",");
             int num = inWords.length;
-            perlStatement += "\n$numberofwords = " + num + ";";
+            perlStatement += "\n$numberOfWords = " + num + ";";
             perlStatement += "\n$testwords = \"";
             if (outString.isEmpty()) {
                 for (int i = 0; i < inWords.length; i++) {
