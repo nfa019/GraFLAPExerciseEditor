@@ -87,7 +87,7 @@ public class AutomatonMapper extends Mapper {
                     return null;
             }
         } else {
-            return null;
+            return AutomatonType.NOT_SPECIFIED;
         }
     }
 
@@ -113,9 +113,8 @@ public class AutomatonMapper extends Mapper {
         stringBuilder.append(getAutomatonModeToXml(automatonModel.getState(), automatonModel.getType(),
                 automatonModel.isPartsDefinitionSelected()));
         stringBuilder.append(getTaskTitleToXml(automatonModel.getTitle()));
-        if (!Objects.equals(automatonModel.getType(), AutomatonType.NOT_SPECIFIED)) {
-            stringBuilder.append(getAutomatonTypeToXml(automatonModel.getDeterminism(), automatonModel.getType()));
-        }
+        stringBuilder.append(getAutomatonTypeToXml(automatonModel.getDeterminism(), automatonModel.getType()));
+
         String msol = "\n$modelsolution = \"jff";
         if (automatonModel.isPartsDefinitionSelected()){
             if (automatonModel.getType().equals(AutomatonType.FINITE_STATE_AUTOMATON)) {
@@ -212,9 +211,9 @@ public class AutomatonMapper extends Mapper {
                 break;
         }
 
-        if (!Objects.equals(type, AutomatonType.NOT_SPECIFIED)) {
+       // if (!Objects.equals(type, AutomatonType.NOT_SPECIFIED)) {
             modeBuilder.append("t");
-        }
+        // }
 
         modeBuilder.append("w");
 
