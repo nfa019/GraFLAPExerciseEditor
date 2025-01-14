@@ -118,10 +118,14 @@ public class AutomatonMapper extends Mapper {
         }
         String msol = "\n$modelsolution = \"jff";
         if (automatonModel.isPartsDefinitionSelected()){
-            msol += ",states,alphabet,transitions,initials,finals\";";
-        } else {
-            msol += "\";";
+            if (automatonModel.getType().equals(AutomatonType.FINITE_STATE_AUTOMATON)) {
+                msol += ",states,alphabet,transitions,initials,finals";
+            } else if (automatonModel.getType().equals(AutomatonType.PUSH_DOWN_AUTOMATON)) {
+                msol += ",states,alphabet,stackalphabet,transitions,initials,finals";
+            }
         }
+        msol += "\";";
+
         stringBuilder.append(msol);
         stringBuilder.append(getRemainingSettings(createWordString(automatonModel.getAcceptedWords(),automatonModel.getNonAcceptedWords())));
 
