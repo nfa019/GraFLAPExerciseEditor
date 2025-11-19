@@ -23,6 +23,8 @@ public class AutomatonDTO {
     private EndOutText endOutText;
     @XmlElement(name = "import")
     private Import importJfl;
+    @XmlElement(name = "import")
+    private Import importParts;
     @XmlElement(name = "postanswerdate")
     private PostAnswerDate postAnswerDate;
     @XmlElement(name = "meta")
@@ -33,11 +35,13 @@ public class AutomatonDTO {
         importJFCH = new Import("JFCH",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/JFlap_call_preparation.library");
         importJffperllib = new Import("jffperllib",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik" +
-                "/Libraries/ReadAutomaton.library");
+                "/Libraries/Automata.library");
         importJffa = new Import("jffa",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/jffautomata.library");
         importJfl = new Import("jfl",  "/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
                 "/JFlap_callAutomaton.library");
+        importParts = new Import("jfp","/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+                "/jff_nopartsAutomaton.library");
         startOutText = new StartOutText();
         endOutText = new EndOutText();
     }
@@ -65,6 +69,17 @@ public class AutomatonDTO {
 
     public void setPostAnswerDate(PostAnswerDate postAnswerDate) {
         this.postAnswerDate = postAnswerDate;
+    }
+
+    public void setImportParts(Boolean parts) {
+        if (parts) {
+            this.importParts = new Import("jfp","/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+                "/jff_partsAutomaton.library");
+        }
+        else {
+            this.importParts = new Import("jfp","/res/fh-hannover/sprengel/Informatik/TheoretischeInformatik/Libraries" +
+                "/jff_nopartsAutomaton.library");
+        }
     }
 
     public Meta getMeta() {  return meta; }

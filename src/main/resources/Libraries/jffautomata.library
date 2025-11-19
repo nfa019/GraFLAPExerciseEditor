@@ -11,18 +11,24 @@ sub addWord{
 	my @list = @_;
 	my $inList = 0;
 	#remove empty words
+    $word =~ s/\s+//g;
 	if (( $word =~ m/€/ )) {$word =~ s/€//g; }
-	foreach (@list) { if ($word eq $_) { $inList=1; last;} }
-	if (!$inList) { 
-		$list[$#list+1] = $word;
-		}
-	@list = sort  (@list);
+    
+    if (!(($word eq "") || ($word eq "Z"))){
+	    foreach (@list) { if ($word eq $_) { $inList=1; last;} }
+	    if (!$inList) { 
+		    $list[$#list+1] = $word;
+		    }
+	    @list = sort  (@list);
+    }   
 	return @list;
 }
 
 #adds a word to a list (only if it is new)
 sub addWordStack{
 	my $word = shift;
+    # Leerzeichen entfernen
+    $word =~ s/\s+//g;
 	my @list = @_;
         my $len = length($word);
         for (my $i=0; $i < $len; $i++){

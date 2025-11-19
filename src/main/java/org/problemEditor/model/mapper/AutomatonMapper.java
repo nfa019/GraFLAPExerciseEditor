@@ -21,9 +21,11 @@ public class AutomatonMapper extends Mapper {
         automatonDTO.setMeta(new Meta("jff",automatonModel.getJff()));
         automatonDTO.setTranslated(getTranslatedElement(automatonModel.getChosenLanguage(),
                 automatonModel.getDescription()));
+        automatonDTO.setImportParts(automatonModel.isPartsDefinitionSelected());
         automatonDTO.setPostAnswerDate(new PostAnswerDate(getTranslatedElement(automatonModel.getChosenLanguage(),
                 getSampleSolutionToXml(automatonModel.getSampleSolution(),
                         automatonModel.isAutomaticSolutionSelected()))));
+
         return automatonDTO;
     }
 
@@ -133,7 +135,7 @@ public class AutomatonMapper extends Mapper {
         if (automatonType.equals(AutomatonType.TURING_AUTOMATON)) {
                 stringBuilder.append("\n$solution = $svgimage;");
             }else {
-                stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
+            //    stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
                 stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgimage);");
             }
 

@@ -40,7 +40,7 @@ sub jflapUrlInput{
           $tasktitle = "JFlap Task";
         }
   }
-  if (!(defined $testWords)) { $testWords = "-"; }
+  if (!(defined $testWords)) { $testWords = "-";  }
 #  $tasktitle =~ s/ü/ue/g;
 #  $tasktitle =~ s/ä/ae/g;
 #  $tasktitle =~ s/ö/oe/g;
@@ -168,7 +168,7 @@ sub jflapUrlInput{
   if($mode ~~ @jflapWordModes || $mode ~~ @wordModes) {
      $input .= $numberOfWords.'#'.$testWords;
   } elsif ($mode ~~ @lcWordModes) {
-    if ($testwords eq "-"){
+    if ($testWords eq "-"){
     my $wordsAcceptNotAccept = "";
        if (($mode eq "arw") || ($mode eq "artw") || ($mode eq "arwp") || ($mode eq "artwp") || ($mode eq "grw") || ($mode eq "grtw")|| ($mode eq "rrw") ){
        $wordsAcceptNotAccept = grammar::wordsFromRegEx($numberOfWords, $maxlength, $given);

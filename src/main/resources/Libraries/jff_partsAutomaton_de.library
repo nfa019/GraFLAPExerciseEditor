@@ -1,0 +1,105 @@
+<library>
+
+<startouttext />
+Gesucht sind außerdem die Bestandteile des Automaten  in formal
+korrekter Form. Geben Sie nacheinander in die untenstehenden Textfelder ein:  <p /> 
+<endouttext />
+  
+<script type="loncapa/perl">
+
+@auto=Automata::readautomaton($jff);
+$type = 0;
+if ($auto[0] eq "pda") { $type = 1; }
+$result1=&cas('maxima',"set($auto[1]);"); # States
+$result2=&cas('maxima',"set($auto[2]);"); # Alphabet
+$result3=&cas('maxima',"set($auto[3]);"); # Stack Alphabet
+$superset = &cas('maxima',"union(set($auto[2]),set($auto[3]));");
+$result5=&cas('maxima',"set($auto[5]);"); # initials
+$result6=&cas('maxima',"set($auto[6]);"); # finals
+if ($auto[7] eq "nd") { $det = 1; } else { $det = 0;}
+$tr = "Text";
+$transitionsTeX = $auto[8];
+
+$set4 = $auto[4];
+$set4 =~ s/\(/[/g;
+$set4 =~ s/\)/]/g;
+$result4=&cas('maxima',"set($set4);"); # Delta
+</script>
+<startouttext />
+die Menge der Zustände  (states),  das Eingabealphabet
+ (alphabet),  (states), 
+
+<endouttext />
+
+<script type="loncapa/perl">
+if ($type) {
+
+</script>
+
+
+<startouttext />
+das Kelleralphabet (Benutzen Sie Z für das Keller-Bottomsymbol)  (stack alphabet), 
+<endouttext />
+
+<script type="loncapa/perl">
+}
+</script>
+
+<startouttext />
+den Anfangszustand/die Anfangszustände  (initials), die Menge der Endzustände (finals),
+<endouttext />
+
+<script type="loncapa/perl">
+if ($type<1) {
+  if ( $det = 1) {
+
+</script>
+<startouttext />
+und die Übergangsfunktion (delta).<p /> 
+Geben Sie dort die Elemente wie folgt an <b>(vonZustand, eingabe, nachZustand)</b>. Benutzen Sie ggf. E für das leere Wort.<p />
+z.B. (s0,a,s1),(s1,b,s2), usw. <p />
+<endouttext />
+
+<script type="loncapa/perl">
+}
+if ( $det < 1) {
+</script>
+
+<startouttext />
+
+und die Übergangsrelation (delta).<p />
+
+Geben Sie dort die Elemente wie folgt an <b>(vonZustand, eingabe, nachZustand)</b>. Benutzen Sie ggf. E für das leere Wort.<p />
+z.B. (s0,a,s1),(s1,E,s2), usw. <p />
+
+<endouttext />
+<script type="loncapa/perl">
+  }
+}
+
+if ($type) {
+</script>
+
+
+
+  <startouttext />
+und die Übergangsrelation
+(delta).
+<p />
+Geben Sie dort die Elemente wie folgt an <b>(vonZustand, eingabe, zeichenAusKeller, nachZustand, wortInKeller)</b>. Benutzen Sie Z als Keller-Bottomsymbol und ggf. E für das leere Wort.<p />
+z.B. (s0,a,E,s1, aa),(s1, b, a,s2, E), (s1, b, Z,s2, b ), usw. <p />
+
+<endouttext />
+<script type="loncapa/perl">
+}
+</script>
+
+
+ <solved><startouttext />
+
+$transitionsTeX
+
+<endouttext /></solved>
+</library>
+
+

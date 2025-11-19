@@ -26,10 +26,12 @@ sub addWordStack{
     my $word = shift;
     my @list = @_;
         my $len = length($word);
+        if ($len>0){
         for (my $i=0; $i < $len; $i++){
            my $character = substr($word, $i, 1);
            @list = addWord($character, @list);
             }
+        }
     return @list;
 }
 
@@ -217,7 +219,7 @@ sub readJFFAutomaton {
                 $stackalphabet[0] = "Z";
                 if ($transString =~/(<pop>.*?<\/pop>)/g){
                     $pop = substr($1, 5, length($1)-11);
-                    @stackalphabet = addWord($pop,@stackalphabet);
+                    @stackalphabet = addWordStack($pop,@stackalphabet);
                     } elsif ($transString =~/(<pop\/>)/g){
                         $pop = "E";
                     }
