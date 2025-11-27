@@ -92,11 +92,12 @@ public abstract class Mapper {
         while (matcher.find()) {
             String match = matcher.group(1);
             String replaced = match.replaceAll("([a-e])", "\\$$1 ");
+            //replaced = replaced.replaceAll(" +", " ");
             replaced = Matcher.quoteReplacement(replaced);
             matcher.appendReplacement(result, replaced);
         }
         matcher.appendTail(result);
-        return result.toString().replaceAll("\"", "\\\\\"");
+        return result.toString().replaceAll(" +", " ").replaceAll("\"", "\\\\\"");
     }
 
     private static @NotNull String getSVGString(@NotNull String jff) {
@@ -200,7 +201,7 @@ public abstract class Mapper {
         Pattern patter = Pattern.compile("\\$given\\s*=\\s*\"(.*?)\"");
         Matcher matcher = patter.matcher(script);
         if (matcher.find()) {
-            return matcher.group(1).replaceAll("\\$", "");
+            return matcher.group(1).replaceAll("\\$", "").replaceAll(" +", " ");
         } else {
             System.out.println("The language was not found!");
             return "";
