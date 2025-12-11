@@ -132,12 +132,12 @@ public class AutomatonMapper extends Mapper {
 
         stringBuilder.append("\n$examplewords = giveExampleWords($given);");
         stringBuilder.append(getJFFAndSVGString(automatonModel.getJff()));
-        if (automatonType.equals(AutomatonType.TURING_AUTOMATON)) {
-                stringBuilder.append("\n$solution = $svgimage;");
-            }else {
-            //    stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
-                stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgimage);");
-            }
+//        if (automatonType.equals(AutomatonType.TURING_AUTOMATON)) {
+//                stringBuilder.append("\n$solution = $svgimage;");
+//            }else {
+//            //    stringBuilder.append("\n@automaton = ReadAutomaton::readJFFAutomaton($jffstring,$svgstring);");
+              stringBuilder.append("\n$solution = jffautomata::samplesolution($jffstring,$svgimage);");
+//            }
 
         return stringBuilder.toString();
     }

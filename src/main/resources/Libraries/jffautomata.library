@@ -29,6 +29,7 @@ sub addWordStack{
 	my $word = shift;
     # Leerzeichen entfernen
     $word =~ s/\s+//g;
+    $word =~ s/Z//g;
 	my @list = @_;
         my $len = length($word);
         for (my $i=0; $i < $len; $i++){
@@ -120,6 +121,7 @@ sub readautomaton{
 		}
 		
 		# find all transitions and the alphabet
+        $stackalphabet[0] = "Z";
 		while($jffString =~/(<transition.*?\/transition>)/g){
 			my $transString = $1;
 			my $letter ="";
@@ -141,10 +143,10 @@ sub readautomaton{
 					$epsauto = 1;
 				}
 			if ($typeOfAutomaton eq "pda"){	
-				$stackalphabet[0] = "Z";
+				
 				if ($transString =~/(<pop>.*?<\/pop>)/g){ 
 					$pop = substr($1, 5, length($1)-11);
-					@stackalphabet = addWord($pop,@stackalphabet);
+				#	@stackalphabet = addWord($pop,@stackalphabet);
 					} elsif ($transString =~/(<pop\/>)/g){ 
 						$pop = "E";
 					}
@@ -190,12 +192,12 @@ sub readautomaton{
 		#TexOutput
 		my $deterministic;
 		if ($typeOfAutomaton eq "pda"){
-			$automaton[8] = "<m>\\[ " . listToString(@texTransitions) . "\\] </m>";
+			$automaton[8] = "\\[ " . listToString(@texTransitions) . "\\]";
 			$automaton[8] =~ s/Z/\\perp/g;
 			}else{ 
 				# finite automaton
 			if ($epsauto){ 
-				$alphabet[++$#alphabet] = "E";
+				# $alphabet[++$#alphabet] = "E";
 				$deterministic = 0;
 				}else{
 				$deterministic = 1;
@@ -245,16 +247,16 @@ sub readautomaton{
 			if ($deterministic){
 				$delta = "\\delta";
 				$automaton[7] = "d";  
-				$automaton[8] = "<m>\\[ " . listToString(@fktTransitions) . "\\] </m> \n";
+				$automaton[8] = "\\[ " . listToString(@fktTransitions) . "\\]  \n";
 				}else{
 				$delta = "\\Delta";
-				$automaton[8] = "<m>\\[ " . listToString(@texTransitions) . "\\] </m>\n";
+				$automaton[8] = "\\[ " . listToString(@texTransitions) . "\\] \n";
 				foreach my $ta (@table){
 					if ($ta =~/,/){ $ta = "\\{". $ta . "\\}"; }
 					}
 				}
 			$automaton[8] .= "<p/> Als Tabelle: \n";
-			my $textable = "<m>\\[ \\begin{array}{c|";
+			my $textable = "\\[ \\begin{array}{c|";
 			foreach (my $i = 0; $i < $numSt; $i++){ $textable .= "c" ; }
 			$textable .= "} \n ". $delta ;
 			foreach (@states) { $textable .= " & " . $_ ; }
@@ -268,7 +270,7 @@ sub readautomaton{
 				$i++;
 				$textable .= " \\\\\\\\";
 				}
-			$textable .= "\n \\end{array} \\] </m>";	
+			$textable .= "\n \\end{array} \\] ";	
 			$automaton[8] .= $textable;
 		}
 
@@ -283,18 +285,18 @@ sub readautomaton{
 sub autostring{
     my $jffstring = shift;
     my @autom = readautomaton($jffstring);
-     my $solutionstring = "Automat: ";
-   $solutionstring .= "<m> \\[ A = (\\{ $autom[1] \\}, \\{ $autom[2] \\},";
+   my $solutionstring = "Automat: ";
+   $solutionstring .= " \\[ A = (\\{ $autom[1] \\}, \\{ $autom[2] \\},";
    if ($autom[0] eq "pda") { 
         $autom[3] =~ s/Z/\\perp/;
         $solutionstring .= "\\{ $autom[3] \\},";}
    if ($autom[7] eq "d") {
        $solutionstring .= "\\delta, $autom[5],"; }
    else { $solutionstring .= "\\Delta, \\{ $autom[5] \\},"; }
-   $solutionstring .= "\\{ $autom[6] \\}) \\] </m>";
-   $solutionstring .= "mit den Übergängen: ";
+   $solutionstring .= "\\{ $autom[6] \\}) \\]";
+   $solutionstring .= "mit den Übergängen ";
    $solutionstring .= $autom[8];
-
+   if ($autom[0] eq "turing") {$solutionstring = "Turing-Automat/Maschine ";}
     return $solutionstring;
 }
 
@@ -304,7 +306,7 @@ sub samplesolution{
     
     my $solutionstring = "<p/> <b>Mögliche Lösung: </b> ";
    $solutionstring .= autostring($jffstring);
-   $solutionstring .= "und dem Zustandsdiagramm: ";
+   $solutionstring .= "mit dem Zustandsdiagramm: ";
    $solutionstring .= "<p/>" . $svgstring;
 
    return $solutionstring;
